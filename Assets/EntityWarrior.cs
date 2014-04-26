@@ -29,7 +29,7 @@ public class EntityWarrior : Entity {
 		BoxCollider cubeCollider = cube.AddComponent<BoxCollider>();
 		cubeCollider.size = new Vector3 (1.25F, 1.25F, 1.25F);
 		entityid = cube.AddComponent<EntityID> ();
-		Debug.Log (entityid.getID ());
+		//Debug.Log (entityid.getID ());
 
 		// testing stuff
 		//Rigidbody.Instantiate (cubeRigid, Main.spawnLocation, Quaternion.identity);
