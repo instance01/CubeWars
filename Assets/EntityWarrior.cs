@@ -27,9 +27,9 @@ public class EntityWarrior : Entity {
 		cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
 		cube.name = "EntityWarrior" + classifier;
 		if (classifier == "RED") {
-			cube.transform.position = new VectorHelper(Main.spawnLocation).add(Random.Range(10, 20), 0, Random.Range (10, 20));
+			cube.transform.position = new VectorHelper(Main.spawnLocation).add(Random.Range(20, 30), 0, Random.Range (20, 30));
 		} else if (classifier == "BLUE") {
-			cube.transform.position = new VectorHelper(Main.spawnLocation).add(Random.Range(1, 11), 0, Random.Range (1, 11));
+			cube.transform.position = new VectorHelper(Main.spawnLocation).add(Random.Range(10, 20), 0, Random.Range (10, 20));
 		}
 		cube.transform.localScale = new Vector3 (0.5F, 0.5F, 0.5F);
 		if (classifier == "RED") {
@@ -87,7 +87,7 @@ public class EntityWarrior : Entity {
 			if (Random.Range (0, 1000) < 1) {
 				// will jump randomly
 				// TODO jump when obstacle in front of entity
-				jump (250);
+				jump (150);
 			}
 		}
 	}
@@ -99,7 +99,7 @@ public class EntityWarrior : Entity {
 	public void update(){
 		move ();
 		if (!said) {
-			if (Random.Range (0, 1000) < 1) {
+			if (Random.Range (0, 1500) < 1) {
 				saySomething (Main.words[Random.Range(0, Main.words.Count)]);
 				said = true;
 			}
