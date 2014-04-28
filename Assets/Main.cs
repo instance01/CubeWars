@@ -14,13 +14,22 @@ public class Main : MonoBehaviour {
 
 	public static Material redMatoutline;
 	public static Material redMat;
+	public static Material blueMatoutline;
+	public static Material blueMat;
 
 	void Start () {
 		redMatoutline = Resources.Load("redMaterialoutline", typeof(Material)) as Material;
 		redMat = Resources.Load("redMaterial", typeof(Material)) as Material;
+		blueMatoutline = Resources.Load("blueMaterialoutline", typeof(Material)) as Material;
+		blueMat = Resources.Load("blueMaterial", typeof(Material)) as Material;
 
 		for (int i = 0; i < 10; i++) {
 			EntityWarriorRED ew = new EntityWarriorRED ();
+			warriors.Add (ew);
+		}
+
+		for (int i = 0; i < 10; i++) {
+			EntityWarriorBLUE ew = new EntityWarriorBLUE ();
 			warriors.Add (ew);
 		}
 	}
@@ -53,9 +62,23 @@ public class Main : MonoBehaviour {
 						}
 					}
 				}
+			}else if(hit.collider.name == "EntityWarriorBLUE"){
+				//hit.collider.renderer.material.SetColor("_OutlineColor", Color.cyan);
+				hit.collider.renderer.material = blueMatoutline;
+				if(Input.GetMouseButtonDown(0)){
+					EntityID e = (EntityID)hit.collider.GetComponent(typeof(EntityID));
+					int tempid = e.getID();
+					
+					foreach(EntityWarrior ew in warriors){
+						if(ew.getEntityID().getID() == tempid){
+							// found
+							ew.jump();
+						}
+					}
+				}
 			}else{
 				foreach(EntityWarrior ew in warriors){
-					ew.getCube().transform.renderer.material = redMat;
+					ew.updateMaterial(false);
 				}
 			}
 			//print (hit.collider.name);

@@ -7,7 +7,7 @@ public class EntityWarrior : Entity {
 
 	GameObject cube;
 	public static float speed = 0.9F;
-	public string classifier = "RED";
+	private string classifier = "RED";
 	EntityID entityid;
 
 	bool said = false;
@@ -26,9 +26,17 @@ public class EntityWarrior : Entity {
 		// creates the cube
 		cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
 		cube.name = "EntityWarrior" + classifier;
-		cube.transform.position = new VectorHelper(Main.spawnLocation).add(Random.Range(10, 20), 0, Random.Range (10, 20));
+		if (classifier == "RED") {
+			cube.transform.position = new VectorHelper(Main.spawnLocation).add(Random.Range(10, 20), 0, Random.Range (10, 20));
+		} else if (classifier == "BLUE") {
+			cube.transform.position = new VectorHelper(Main.spawnLocation).add(Random.Range(1, 11), 0, Random.Range (1, 11));
+		}
 		cube.transform.localScale = new Vector3 (0.5F, 0.5F, 0.5F);
-		cube.renderer.material = Main.redMat;	
+		if (classifier == "RED") {
+			cube.renderer.material = Main.redMat;
+		} else if (classifier == "BLUE") {
+			cube.renderer.material = Main.blueMat;
+		}
 
 		// adds components to cube
 		cube.AddComponent<Rigidbody>(); 
@@ -75,6 +83,12 @@ public class EntityWarrior : Entity {
 		if (getTarget () == null) {
 			cube.transform.Rotate(0, Random.Range(-5, 5), 0); // they move to the left more often because we never reach 5 here (just -5 to 4).
 			cube.transform.Translate(Vector3.forward * Time.deltaTime * speed);
+		
+			if (Random.Range (0, 1000) < 1) {
+				// will jump randomly
+				// TODO jump when obstacle in front of entity
+				jump (250);
+			}
 		}
 	}
 
@@ -106,11 +120,35 @@ public class EntityWarrior : Entity {
 		return cube;
 	}
 
+	public string getClassifier(){
+		return classifier;
+	}
+
+	public void updateMaterial(bool jump){
+		if (classifier == "RED") {
+			if(!jump){
+				getCube().transform.renderer.material = Main.redMat;
+			}else{
+				getCube().transform.renderer.material = Main.redMatoutline;
+			}
+		} else if (classifier == "BLUE") {
+			if(!jump){
+				getCube().transform.renderer.material = Main.blueMat;
+			}else{
+				getCube().transform.renderer.material = Main.blueMatoutline;
+			}
+		}
+	}
+
 	public EntityID getEntityID(){
 		return entityid;
 	}
 
 	public void jump(){
 		cube.rigidbody.AddForce (0, 100, 0);
+	}
+
+	public void jump(int force){
+		cube.rigidbody.AddForce (0, force, 0);
 	}
 }
