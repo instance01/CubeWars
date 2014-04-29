@@ -49,12 +49,11 @@ public class Main : MonoBehaviour {
 		if(Physics.Raycast(ray, out hit))
 		{
 			if(hit.collider.name == "EntityWarriorRED"){
-				//hit.collider.renderer.material.SetColor("_OutlineColor", Color.cyan);
 				hit.collider.renderer.material = redMatoutline;
 				if(Input.GetMouseButtonDown(0)){
 					EntityID e = (EntityID)hit.collider.GetComponent(typeof(EntityID));
 					int tempid = e.getID();
-
+                    
 					foreach(EntityWarrior ew in warriors){
 						if(ew.getEntityID().getID() == tempid){
 							// found
@@ -63,7 +62,6 @@ public class Main : MonoBehaviour {
 					}
 				}
 			}else if(hit.collider.name == "EntityWarriorBLUE"){
-				//hit.collider.renderer.material.SetColor("_OutlineColor", Color.cyan);
 				hit.collider.renderer.material = blueMatoutline;
 				if(Input.GetMouseButtonDown(0)){
 					EntityID e = (EntityID)hit.collider.GetComponent(typeof(EntityID));

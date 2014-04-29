@@ -6,6 +6,8 @@ Assets/Standard Assets/
 Assets/Editor/
 Assets/Editor.meta
 Assets/Standard Assets.meta
+Assets/Builtin skin/
+Assets/Builtin skin.meta
 
 ExportedObj/
 *.svd

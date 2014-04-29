@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Linq;
 
 // A warrior moves around very aggressively and fast and is a short ranged entity
 
@@ -12,7 +13,8 @@ public class EntityWarrior : Entity {
 
 	bool said = false;
 	int said_c = 0;
-	private GameObject ctxt;
+    bool shootcooldown = false;
+    int shootcooldown_c = 0;
 	private GameObject txt;
 	private TextMesh txtMesh;
 
@@ -21,11 +23,14 @@ public class EntityWarrior : Entity {
 		createGraphics ();
 	}
 
+	Entity target;
+
 	public void createGraphics(){
 
 		// creates the cube
 		cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
 		cube.name = "EntityWarrior" + classifier;
+        cube.tag = "EntityWarrior" + classifier;
 		if (classifier == "RED") {
 			cube.transform.position = new VectorHelper(Main.spawnLocation).add(Random.Range(20, 30), 0, Random.Range (20, 30));
 		} else if (classifier == "BLUE") {
@@ -53,7 +58,6 @@ public class EntityWarrior : Entity {
 		txt = new GameObject();
 		
 		txtMesh = (TextMesh)txt.AddComponent(typeof(TextMesh));
-		MeshFilter meshfilter = (MeshFilter)txt.AddComponent(typeof(MeshFilter));
 		txtMesh.font = (Font)Resources.Load("pf_arma_five", typeof(Font));
 		txt.transform.renderer.material = (Material)Resources.Load("pf_arma_five", typeof(Material));
 		//MeshRenderer meshRenderer = (MeshRenderer)txt.AddComponent(typeof(MeshRenderer));
@@ -78,7 +82,37 @@ public class EntityWarrior : Entity {
 		//ctxt = (GameObject) GameObject.Instantiate (txt);
 	}
 
+	public void attack(EntityWarrior ew){
+		GameObject attackcube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+		attackcube.name = "EntityWarrior" + classifier + "_BULLET";
+		attackcube.transform.localScale = new Vector3 (0.1F, 0.1F, 0.1F);
+		if (classifier == "RED") {
+			attackcube.renderer.material = Main.redMat;
+		} else if (classifier == "BLUE") {
+			attackcube.renderer.material = Main.blueMat;
+		}
+		attackcube.transform.localRotation = cube.transform.localRotation;
+		attackcube.transform.localPosition = new VectorHelper(cube.transform.localPosition).add(0, 1, 0);
+
+		Rigidbody rigid = (Rigidbody)attackcube.AddComponent (typeof(Rigidbody));
+		rigid.velocity = new VectorHelper((ew.getCube().transform.position - attackcube.transform.position).normalized * speed * 15).add(0F, 2.5F, 0F);
+		//rigid.velocity.Set (rigid.velocity.x, 25, rigid.velocity.z);
+
+        GameObject.Destroy(attackcube, 4);
+
+        if (Vector3.Distance(getCube().transform.position, ew.getCube().transform.position) > 15)
+        {
+            this.target = null;
+        }
+	}
+
 	public void move(){
+		// will update text coords
+		if (said) {
+			txt.transform.localPosition = cube.transform.localPosition;
+			txt.transform.Translate (0, 1, 0);
+		}
+
 		// will just randomly move around if no target found
 		if (getTarget () == null) {
 			cube.transform.Rotate(0, Random.Range(-5, 5), 0); // they move to the left more often because we never reach 5 here (just -5 to 4).
@@ -89,11 +123,64 @@ public class EntityWarrior : Entity {
 				// TODO jump when obstacle in front of entity
 				jump (150);
 			}
+
+
+			// try to find a new target
+			var currentPos = getCube().transform.position;
+            string enemyClassifier = "";
+            if (classifier == "RED")
+            {
+                enemyClassifier = "BLUE";
+            }
+            else if (classifier == "BLUE")
+            {
+                enemyClassifier = "RED";
+            }
+
+            var closestGameObject = GameObject.FindGameObjectsWithTag("EntityWarrior" + enemyClassifier)
+               .Select(go => new { go = go, position = go.transform.position })
+               .Aggregate((current, next) =>
+                  (current.position - currentPos).sqrMagnitude <
+                  (next.position - currentPos).sqrMagnitude
+                  ? current : next).go;
+
+            if (Vector3.Distance(getCube().transform.position, closestGameObject.transform.position) < 10) {
+                EntityID e = (EntityID)closestGameObject.GetComponent(typeof(EntityID));
+                int tempid = e.getID();
+
+                foreach (EntityWarrior ew in Main.warriors)
+                {
+                    if (ew.getEntityID().getID() == tempid)
+                    {
+                        target = ew;
+                    }
+                }
+            }
+		}else{
+            if (shootcooldown)
+            {
+                shootcooldown_c++;
+                if (shootcooldown_c > 100)
+                {
+                    shootcooldown = false;
+                    shootcooldown_c = 0;
+                }
+                return;
+            }
+			if(target is EntityWarriorRED){
+				EntityWarriorRED ewr = (EntityWarriorRED) target;
+                shootcooldown = true;
+				attack (ewr);
+			}else if(target is EntityWarriorBLUE){
+				EntityWarriorBLUE ewb = (EntityWarriorBLUE) target;
+                shootcooldown = true;
+				attack (ewb);
+			}
 		}
 	}
 
 	public Entity getTarget(){
-		return null;
+		return target;
 	}
 
 	public void update(){
@@ -109,9 +196,6 @@ public class EntityWarrior : Entity {
 				said_c = 0;
 				said = false;
 				txt.renderer.enabled = false;
-				if(ctxt != null){
-					GameObject.Destroy(ctxt);
-				}
 			}
 		}
 	}
