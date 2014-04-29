@@ -7,8 +7,10 @@ using System.Linq;
 public class EntityWarrior : Entity {
 
 	GameObject cube;
+	BoxCollider cubeCollider;
 	public static float speed = 0.9F;
 	private string classifier = "RED";
+	private string enemyClassifier = "";
 	EntityID entityid;
 
 	bool said = false;
@@ -18,12 +20,24 @@ public class EntityWarrior : Entity {
 	private GameObject txt;
 	private TextMesh txtMesh;
 
+	Entity target;
+	
+	private int health = 1;
+	private bool dead = false;
+
+
 	public EntityWarrior(string c){
 		this.classifier = c;
+		if (classifier == "RED")
+		{
+			enemyClassifier = "BLUE";
+		}
+		else if (classifier == "BLUE")
+		{
+			enemyClassifier = "RED";
+		}
 		createGraphics ();
 	}
-
-	Entity target;
 
 	public void createGraphics(){
 
@@ -45,9 +59,10 @@ public class EntityWarrior : Entity {
 
 		// adds components to cube
 		cube.AddComponent<Rigidbody>(); 
-		BoxCollider cubeCollider = cube.AddComponent<BoxCollider>();
+		cubeCollider = cube.AddComponent<BoxCollider>();
 		cubeCollider.size = new Vector3 (1.25F, 1.25F, 1.25F);
 		entityid = cube.AddComponent<EntityID> ();
+		cube.AddComponent<EntityCollider> ().init (this);
 		//Debug.Log (entityid.getID ());
 
 		// testing stuff
@@ -83,6 +98,10 @@ public class EntityWarrior : Entity {
 	}
 
 	public void attack(EntityWarrior ew){
+		if (ew.getCube () == null) {
+			target = null;
+			return;
+		}
 		GameObject attackcube = GameObject.CreatePrimitive(PrimitiveType.Cube);
 		attackcube.name = "EntityWarrior" + classifier + "_BULLET";
 		attackcube.transform.localScale = new Vector3 (0.1F, 0.1F, 0.1F);
@@ -124,20 +143,10 @@ public class EntityWarrior : Entity {
 				jump (150);
 			}
 
-
 			// try to find a new target
 			var currentPos = getCube().transform.position;
-            string enemyClassifier = "";
-            if (classifier == "RED")
-            {
-                enemyClassifier = "BLUE";
-            }
-            else if (classifier == "BLUE")
-            {
-                enemyClassifier = "RED";
-            }
 
-            var closestGameObject = GameObject.FindGameObjectsWithTag("EntityWarrior" + enemyClassifier)
+			GameObject closestGameObject = GameObject.FindGameObjectsWithTag("EntityWarrior" + enemyClassifier)
                .Select(go => new { go = go, position = go.transform.position })
                .Aggregate((current, next) =>
                   (current.position - currentPos).sqrMagnitude <
@@ -184,6 +193,9 @@ public class EntityWarrior : Entity {
 	}
 
 	public void update(){
+		if (dead) {
+			return;
+		}
 		move ();
 		if (!said) {
 			if (Random.Range (0, 1500) < 1) {
@@ -196,6 +208,18 @@ public class EntityWarrior : Entity {
 				said_c = 0;
 				said = false;
 				txt.renderer.enabled = false;
+			}
+		}
+	}
+
+	public void checkCollide(Collision c){
+		if (c.gameObject.name == ("EntityWarrior" + enemyClassifier + "_BULLET")) {
+			this.health -= 1;
+			if (this.health < 0){
+				// dead
+				dead = true;
+				Main.warriors.Remove(this);
+				GameObject.Destroy(cube, 1);
 			}
 		}
 	}
