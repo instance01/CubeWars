@@ -265,7 +265,12 @@ public class EntityWarrior : Entity {
 				txt.renderer.enabled = false;
 				GameObject.Destroy(health_green);
 				GameObject.Destroy(health_red);
-				GameObject.Destroy(cube, 1);
+				GameObject.Destroy(cube, 0);
+				if(classifier == "RED"){
+					Main.updateWarriorCounts(Main.redwarriors - 1, Main.bluewarriors);
+				}else{
+					Main.updateWarriorCounts(Main.redwarriors, Main.bluewarriors - 1);
+				}
 			}
 		}
 	}

@@ -8,6 +8,8 @@ public class Main : MonoBehaviour {
 
 	public static Vector3 spawnLocation = new Vector3(0F, 2.5F, 0F);
 	public static List<EntityWarrior> warriors = new List<EntityWarrior>();
+	public static int redwarriors = 0;
+	public static int bluewarriors = 0;
 
 	Ray ray;
 	RaycastHit hit;
@@ -28,11 +30,13 @@ public class Main : MonoBehaviour {
 		for (int i = 0; i < 10; i++) {
 			EntityWarriorRED ew = new EntityWarriorRED ();
 			warriors.Add (ew);
+			redwarriors++;
 		}
 
 		for (int i = 0; i < 10; i++) {
 			EntityWarriorBLUE ew = new EntityWarriorBLUE ();
 			warriors.Add (ew);
+			bluewarriors++;
 		}
 	}
 
@@ -92,4 +96,16 @@ public class Main : MonoBehaviour {
 			//print (hit.collider.name);
 		}
 	}
+
+	void OnGUI() {
+		string re = redwarriors.ToString ();
+		string be = bluewarriors.ToString ();
+		GUI.Label (new Rect (Screen.width / 2 - 30,5,60,20), "R " + re + " : " + be + " B");
+	}
+
+	public static void updateWarriorCounts(int r, int b){
+		redwarriors = r;
+		bluewarriors = b;
+	}
+
 }
