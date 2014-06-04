@@ -98,9 +98,16 @@ public class Main : MonoBehaviour {
 	}
 
 	void OnGUI() {
+		GUIStyle style = GUI.skin.GetStyle("Label");
+		style.alignment = TextAnchor.UpperCenter;
 		string re = redwarriors.ToString ();
 		string be = bluewarriors.ToString ();
-		GUI.Label (new Rect (Screen.width / 2 - 30,5,60,20), "R " + re + " : " + be + " B");
+		style.normal.textColor = Color.red;
+		GUI.Label (new Rect (Screen.width / 2 - 40,5,10,20), "R");
+		style.normal.textColor = Color.white;
+		GUI.Label (new Rect (Screen.width / 2 - 30,5,60,20), re + " : " + be);
+		style.normal.textColor = Color.blue;
+		GUI.Label (new Rect (Screen.width / 2 + 30,5,10,20), "B");
 	}
 
 	public static void updateWarriorCounts(int r, int b){
