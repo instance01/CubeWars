@@ -19,12 +19,15 @@ public class EntityWarrior : Entity {
     int shootcooldown_c = 0;
 	private GameObject txt;
 	private TextMesh txtMesh;
+	private GameObject health_green;
+	private GameObject health_red;
 
 	Entity target;
 	
-	private int health = 1;
+	private int health = 3;
+	private int maxhealth = 3;
 	private bool dead = false;
-
+	private bool move_ = true;
 
 	public EntityWarrior(string c){
 		this.classifier = c;
@@ -86,6 +89,20 @@ public class EntityWarrior : Entity {
 		txt.transform.localScale = new Vector3 (0.2F, 0.2F, 0.2F);
 		MeshRenderer meshrenderer = (MeshRenderer)txt.GetComponent (typeof(MeshRenderer));
 		meshrenderer.enabled = false;
+
+
+		// health bar
+		health_green = new GameObject ();
+		health_red = new GameObject ();
+		health_green = GameObject.CreatePrimitive(PrimitiveType.Plane);
+		health_red = GameObject.CreatePrimitive(PrimitiveType.Plane);
+		health_green.transform.renderer.material = (Material)Resources.Load("greenMaterial", typeof(Material));
+		health_red.transform.renderer.material = Main.redMat;
+		health_green.transform.localScale = new Vector3 (health * 0.05F, 0.005F, 0.005F);
+		health_red.transform.localScale = new Vector3 (health * 0.05F, 0.005F, 0.005F);
+		health_green.transform.Rotate (new Vector3 (-90F, 0F, 0F));
+		health_red.transform.Rotate (new Vector3 (-90F, 0F, 0F));
+
 	}
 
 	public void saySomething(string msg){
@@ -95,6 +112,14 @@ public class EntityWarrior : Entity {
 		MeshRenderer meshrenderer = (MeshRenderer)txt.GetComponent (typeof(MeshRenderer));
 		meshrenderer.enabled = true;
 		//ctxt = (GameObject) GameObject.Instantiate (txt);
+	}
+
+	public void updateHealthbar(){
+		health_green.transform.localPosition = cube.transform.localPosition;
+		health_red.transform.localPosition = cube.transform.localPosition;
+		health_red.transform.Translate (0F, 0.5F, 1F);
+		health_green.transform.Translate (0F - (maxhealth - health) * 0.25F , 0.525F, 1F);
+		health_green.transform.localScale = new Vector3 (health * 0.05F, 0.005F, 0.01F);
 	}
 
 	public void attack(EntityWarrior ew){
@@ -125,6 +150,17 @@ public class EntityWarrior : Entity {
         }
 	}
 
+	public void moveTo(Vector3 v, float speed_){
+		if (cube != null) {
+			//Vector3 targetDir = target.position - transform.position;
+			//Vector3 newDir = Vector3.RotateTowards(transform.forward, targetDir, step, 0.0F);
+			//transform.rotation = Quaternion.LookRotation(newDir);
+
+			cube.transform.rotation = Quaternion.LookRotation(Vector3.RotateTowards(cube.transform.position, v - cube.transform.position, Time.deltaTime * speed_, 0.0F));
+			cube.transform.position = Vector3.MoveTowards(cube.transform.position, v, Time.deltaTime * speed_);
+		}
+	}
+
 	public void move(){
 		// will update text coords
 		if (said) {
@@ -134,37 +170,42 @@ public class EntityWarrior : Entity {
 
 		// will just randomly move around if no target found
 		if (getTarget () == null) {
-			cube.transform.Rotate(0, Random.Range(-5, 5), 0); // they move to the left more often because we never reach 5 here (just -5 to 4).
-			cube.transform.Translate(Vector3.forward * Time.deltaTime * speed);
-		
-			if (Random.Range (0, 1000) < 1) {
-				// will jump randomly
-				// TODO jump when obstacle in front of entity
-				jump (150);
+			if(move_){
+				cube.transform.Rotate(0, Random.Range(-5, 5), 0); // they move to the left more often because we never reach 5 here (just -5 to 4).
+				cube.transform.Translate(Vector3.forward * Time.deltaTime * speed);
+				
+				if (Random.Range (0, 1000) < 1) {
+					// will jump randomly
+					// TODO jump when obstacle in front of entity
+					jump (150);
+				}
 			}
 
 			// try to find a new target
 			var currentPos = getCube().transform.position;
 
-			GameObject closestGameObject = GameObject.FindGameObjectsWithTag("EntityWarrior" + enemyClassifier)
-               .Select(go => new { go = go, position = go.transform.position })
-               .Aggregate((current, next) =>
-                  (current.position - currentPos).sqrMagnitude <
-                  (next.position - currentPos).sqrMagnitude
-                  ? current : next).go;
-
-            if (Vector3.Distance(getCube().transform.position, closestGameObject.transform.position) < 10) {
-                EntityID e = (EntityID)closestGameObject.GetComponent(typeof(EntityID));
-                int tempid = e.getID();
-
-                foreach (EntityWarrior ew in Main.warriors)
-                {
-                    if (ew.getEntityID().getID() == tempid)
-                    {
-                        target = ew;
-                    }
-                }
-            }
+			GameObject[] gos = GameObject.FindGameObjectsWithTag("EntityWarrior" + enemyClassifier);
+			if(gos.Length > 0){
+				GameObject closestGameObject = gos
+					.Select(go => new { go = go, position = go.transform.position })
+						.Aggregate((current, next) =>
+						           (current.position - currentPos).sqrMagnitude <
+						           (next.position - currentPos).sqrMagnitude
+						           ? current : next).go;
+				
+				if (Vector3.Distance(getCube().transform.position, closestGameObject.transform.position) < 10) {
+					EntityID e = (EntityID)closestGameObject.GetComponent(typeof(EntityID));
+					int tempid = e.getID();
+					
+					foreach (EntityWarrior ew in Main.warriors)
+					{
+						if (ew.getEntityID().getID() == tempid)
+						{
+							target = ew;
+						}
+					}
+				}
+			}
 		}else{
             if (shootcooldown)
             {
@@ -196,6 +237,7 @@ public class EntityWarrior : Entity {
 		if (dead) {
 			return;
 		}
+		updateHealthbar ();
 		move ();
 		if (!said) {
 			if (Random.Range (0, 1500) < 1) {
@@ -215,10 +257,14 @@ public class EntityWarrior : Entity {
 	public void checkCollide(Collision c){
 		if (c.gameObject.name == ("EntityWarrior" + enemyClassifier + "_BULLET")) {
 			this.health -= 1;
-			if (this.health < 0){
+			if (this.health < 1){
 				// dead
 				dead = true;
 				Main.warriors.Remove(this);
+				said = false;
+				txt.renderer.enabled = false;
+				GameObject.Destroy(health_green);
+				GameObject.Destroy(health_red);
 				GameObject.Destroy(cube, 1);
 			}
 		}
@@ -230,6 +276,10 @@ public class EntityWarrior : Entity {
 
 	public string getClassifier(){
 		return classifier;
+	}
+
+	public void setMove(bool m){
+		this.move_ = m;
 	}
 
 	public void updateMaterial(bool jump){

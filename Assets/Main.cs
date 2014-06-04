@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public class Main : MonoBehaviour {
 
-	public static List<string> words = new List<string>(new string[] { "Hi", "What's up fellow!", "Dudee", "Dudeeee", "I'm bored.", "?", "!", "Mhm", "Hmmm", "I hate you", "I love you", "Nope Nope Nope", "Gawd", "Ugh", "yaaaaay" });
+	public static List<string> words = new List<string>(new string[] { "Hi", "What's up fellow!", "Dudee", "Dudeeee", "I'm bored.", "?", "!", "Mhm", "Hmmm", "I hate you", "I love you", "Nope Nope Nope", "Gawd", "Ugh", "yaaaaay", "mkay", "sup" });
 
 	public static Vector3 spawnLocation = new Vector3(0F, 2.5F, 0F);
 	public static List<EntityWarrior> warriors = new List<EntityWarrior>();
@@ -16,6 +16,8 @@ public class Main : MonoBehaviour {
 	public static Material redMat;
 	public static Material blueMatoutline;
 	public static Material blueMat;
+
+	Entity selected;
 
 	void Start () {
 		redMatoutline = Resources.Load("redMaterialoutline", typeof(Material)) as Material;
@@ -58,6 +60,7 @@ public class Main : MonoBehaviour {
 						if(ew.getEntityID().getID() == tempid){
 							// found
 							ew.jump();
+							selected = ew;
 						}
 					}
 				}
@@ -71,12 +74,19 @@ public class Main : MonoBehaviour {
 						if(ew.getEntityID().getID() == tempid){
 							// found
 							ew.jump();
+							selected = ew;
 						}
 					}
 				}
 			}else{
 				foreach(EntityWarrior ew in warriors){
 					ew.updateMaterial(false);
+				}
+
+				if(selected != null){
+					EntityWarrior ew_ = (EntityWarrior) selected;
+					ew_.setMove(false);
+					ew_.moveTo(hit.point, 1.5F);
 				}
 			}
 			//print (hit.collider.name);
