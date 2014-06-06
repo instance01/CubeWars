@@ -12,6 +12,8 @@ public class Entity {
     public bool dead = false;
     public bool move_ = true;
 
+    public Vector3 moveto;
+
 	public Entity(){
 
 	}
@@ -48,12 +50,22 @@ public class Entity {
         {
             cube.transform.rotation = Quaternion.LookRotation(Vector3.RotateTowards(cube.transform.position, v - cube.transform.position, Time.deltaTime * speed_, 0.0F));
             cube.transform.position = Vector3.MoveTowards(cube.transform.position, v, Time.deltaTime * speed_);
+            if ((cube.transform.position.x - v.x) < 0.2 && (cube.transform.position.z - v.z) < 0.2)
+            {
+                move_ = true;
+            }
         }
     }
 
     public GameObject getCube()
     {
         return cube;
+    }
+
+    public void setMove(bool m, Vector3 v)
+    {
+        this.move_ = m;
+        moveto = v;
     }
 
     public void setMove(bool m)

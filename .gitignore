@@ -9,6 +9,7 @@ Assets/Standard Assets.meta
 Assets/Builtin skin/
 Assets/Builtin skin.meta
 
+BUILD/
 ExportedObj/
 *.svd
 *.userprefs

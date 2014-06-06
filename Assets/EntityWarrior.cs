@@ -127,7 +127,35 @@ public class EntityWarrior : Entity {
         }
 	}
 
-	
+    public void findTarget()
+    {
+        var currentPos = getCube().transform.position;
+
+        GameObject[] gos = GameObject.FindGameObjectsWithTag("EntityWarrior" + enemyClassifier);
+        if (gos.Length > 0)
+        {
+            GameObject closestGameObject = gos
+                .Select(go => new { go = go, position = go.transform.position })
+                    .Aggregate((current, next) =>
+                               (current.position - currentPos).sqrMagnitude <
+                               (next.position - currentPos).sqrMagnitude
+                               ? current : next).go;
+
+            if (Vector3.Distance(getCube().transform.position, closestGameObject.transform.position) < 10)
+            {
+                EntityID e = (EntityID)closestGameObject.GetComponent(typeof(EntityID));
+                int tempid = e.getID();
+
+                foreach (EntityWarrior ew in Main.warriors)
+                {
+                    if (ew.getEntityID().getID() == tempid)
+                    {
+                        target = ew;
+                    }
+                }
+            }
+        }
+    }
 
 	public void move(){
 		// will update text coords
@@ -135,6 +163,11 @@ public class EntityWarrior : Entity {
 			txt.transform.localPosition = cube.transform.localPosition;
 			txt.transform.Translate (0, 1, 0);
 		}
+
+        if (!move_)
+        {
+            moveTo(moveto, 1.5F);
+        }
 
 		// will just randomly move around if no target found
 		if (getTarget () == null) {
@@ -147,33 +180,10 @@ public class EntityWarrior : Entity {
 					// TODO jump when obstacle in front of entity
 					jump (150);
 				}
-			}
+            }
 
 			// try to find a new target
-			var currentPos = getCube().transform.position;
-
-			GameObject[] gos = GameObject.FindGameObjectsWithTag("EntityWarrior" + enemyClassifier);
-			if(gos.Length > 0){
-				GameObject closestGameObject = gos
-					.Select(go => new { go = go, position = go.transform.position })
-						.Aggregate((current, next) =>
-						           (current.position - currentPos).sqrMagnitude <
-						           (next.position - currentPos).sqrMagnitude
-						           ? current : next).go;
-				
-				if (Vector3.Distance(getCube().transform.position, closestGameObject.transform.position) < 10) {
-					EntityID e = (EntityID)closestGameObject.GetComponent(typeof(EntityID));
-					int tempid = e.getID();
-					
-					foreach (EntityWarrior ew in Main.warriors)
-					{
-						if (ew.getEntityID().getID() == tempid)
-						{
-							target = ew;
-						}
-					}
-				}
-			}
+            findTarget();
 		}else{
             if (shootcooldown)
             {
@@ -239,6 +249,7 @@ public class EntityWarrior : Entity {
 				}else{
 					Main.updateWarriorCounts(Main.redwarriors, Main.bluewarriors - 1);
 				}
+                return;
 			}
 		}
 	}

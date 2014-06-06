@@ -21,11 +21,14 @@ public class Main : MonoBehaviour {
 
 	Entity selected;
 
+    Texture2D cursor;
+
 	void Start () {
 		redMatoutline = Resources.Load("redMaterialoutline", typeof(Material)) as Material;
 		redMat = Resources.Load("redMaterial", typeof(Material)) as Material;
 		blueMatoutline = Resources.Load("blueMaterialoutline", typeof(Material)) as Material;
 		blueMat = Resources.Load("blueMaterial", typeof(Material)) as Material;
+        cursor = Resources.Load("cursor", typeof(Texture2D)) as Texture2D;
 
 		for (int i = 0; i < 10; i++) {
 			EntityWarriorRED ew = new EntityWarriorRED ();
@@ -39,6 +42,7 @@ public class Main : MonoBehaviour {
 			bluewarriors++;
 		}
 	}
+
 
 	void Update () {
 		float moveVertical = Input.GetAxis("Vertical") * 4 * Time.deltaTime;
@@ -88,9 +92,15 @@ public class Main : MonoBehaviour {
 				}
 
 				if(selected != null){
-					EntityWarrior ew_ = (EntityWarrior) selected;
-					ew_.setMove(false);
-					ew_.moveTo(hit.point, 1.5F);
+                    if (Input.GetMouseButtonDown(0))
+                    {
+                        EntityWarrior ew_ = (EntityWarrior)selected;
+                        ew_.setMove(false, hit.point);
+                        ew_.moveTo(hit.point, 1.5F);
+                        // spawn cool pointer
+
+                    }
+					
 				}
 			}
 			//print (hit.collider.name);
