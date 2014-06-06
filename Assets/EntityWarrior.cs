@@ -6,7 +6,6 @@ using System.Linq;
 
 public class EntityWarrior : Entity {
 
-	GameObject cube;
 	BoxCollider cubeCollider;
 	public static float speed = 0.9F;
 	private string classifier = "RED";
@@ -19,15 +18,10 @@ public class EntityWarrior : Entity {
     int shootcooldown_c = 0;
 	private GameObject txt;
 	private TextMesh txtMesh;
-	private GameObject health_green;
-	private GameObject health_red;
+
 
 	Entity target;
-	
-	private int health = 3;
-	private int maxhealth = 3;
-	private bool dead = false;
-	private bool move_ = true;
+
 
 	public EntityWarrior(string c){
 		this.classifier = c;
@@ -91,17 +85,7 @@ public class EntityWarrior : Entity {
 		meshrenderer.enabled = false;
 
 
-		// health bar
-		health_green = new GameObject ();
-		health_red = new GameObject ();
-		health_green = GameObject.CreatePrimitive(PrimitiveType.Plane);
-		health_red = GameObject.CreatePrimitive(PrimitiveType.Plane);
-		health_green.transform.renderer.material = (Material)Resources.Load("greenMaterial", typeof(Material));
-		health_red.transform.renderer.material = Main.redMat;
-		health_green.transform.localScale = new Vector3 (health * 0.05F, 0.005F, 0.005F);
-		health_red.transform.localScale = new Vector3 (health * 0.05F, 0.005F, 0.005F);
-		health_green.transform.Rotate (new Vector3 (-90F, 0F, 0F));
-		health_red.transform.Rotate (new Vector3 (-90F, 0F, 0F));
+        base.createHealthbarGraphics();
 
 	}
 
@@ -114,13 +98,6 @@ public class EntityWarrior : Entity {
 		//ctxt = (GameObject) GameObject.Instantiate (txt);
 	}
 
-	public void updateHealthbar(){
-		health_green.transform.localPosition = cube.transform.localPosition;
-		health_red.transform.localPosition = cube.transform.localPosition;
-		health_red.transform.Translate (0F, 0.5F, 1F);
-		health_green.transform.Translate (0F - (maxhealth - health) * 0.25F , 0.525F, 1F);
-		health_green.transform.localScale = new Vector3 (health * 0.05F, 0.005F, 0.01F);
-	}
 
 	public void attack(EntityWarrior ew){
 		if (ew.getCube () == null) {
@@ -150,16 +127,7 @@ public class EntityWarrior : Entity {
         }
 	}
 
-	public void moveTo(Vector3 v, float speed_){
-		if (cube != null) {
-			//Vector3 targetDir = target.position - transform.position;
-			//Vector3 newDir = Vector3.RotateTowards(transform.forward, targetDir, step, 0.0F);
-			//transform.rotation = Quaternion.LookRotation(newDir);
-
-			cube.transform.rotation = Quaternion.LookRotation(Vector3.RotateTowards(cube.transform.position, v - cube.transform.position, Time.deltaTime * speed_, 0.0F));
-			cube.transform.position = Vector3.MoveTowards(cube.transform.position, v, Time.deltaTime * speed_);
-		}
-	}
+	
 
 	public void move(){
 		// will update text coords
@@ -275,16 +243,8 @@ public class EntityWarrior : Entity {
 		}
 	}
 
-	public GameObject getCube(){
-		return cube;
-	}
-
 	public string getClassifier(){
 		return classifier;
-	}
-
-	public void setMove(bool m){
-		this.move_ = m;
 	}
 
 	public void updateMaterial(bool jump){
