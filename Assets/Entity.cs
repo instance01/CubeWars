@@ -53,6 +53,7 @@ public class Entity {
             if ((cube.transform.position.x - v.x) < 0.2 && (cube.transform.position.z - v.z) < 0.2)
             {
                 move_ = true;
+                Main.cursorcone.renderer.enabled = false;
             }
         }
     }

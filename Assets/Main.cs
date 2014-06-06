@@ -21,14 +21,15 @@ public class Main : MonoBehaviour {
 
 	Entity selected;
 
-    Texture2D cursor;
+    public static GameObject cursorcone;
+    bool conedown = true;
 
 	void Start () {
 		redMatoutline = Resources.Load("redMaterialoutline", typeof(Material)) as Material;
 		redMat = Resources.Load("redMaterial", typeof(Material)) as Material;
 		blueMatoutline = Resources.Load("blueMaterialoutline", typeof(Material)) as Material;
 		blueMat = Resources.Load("blueMaterial", typeof(Material)) as Material;
-        cursor = Resources.Load("cursor", typeof(Texture2D)) as Texture2D;
+        cursorcone = GameObject.Find("cone");
 
 		for (int i = 0; i < 10; i++) {
 			EntityWarriorRED ew = new EntityWarriorRED ();
@@ -45,16 +46,37 @@ public class Main : MonoBehaviour {
 
 
 	void Update () {
+        // move the camera
 		float moveVertical = Input.GetAxis("Vertical") * 4 * Time.deltaTime;
 		float moveVertical2 = Input.GetAxis("Vertical2") * 3 * Time.deltaTime;
 		float moveHorizontal = Input.GetAxis("Horizontal") * 3 * Time.deltaTime;
-		
 		transform.Translate(new Vector3(moveHorizontal, moveVertical2, moveVertical));
 
+        // animate cursorcone
+        if (!conedown)
+        {
+            cursorcone.transform.Translate(new Vector3(0F, 0F, -0.03F));
+            if (cursorcone.transform.position.y > 1.1)
+            {
+                conedown = true;
+            }
+        }
+        else if(conedown)
+        {
+            cursorcone.transform.Translate(new Vector3(0F, 0F, 0.03F));
+            if (cursorcone.transform.position.y < 0.7)
+            {
+                conedown = false;
+            }
+        }
+        
+        
+        // update all warriors
 		foreach(EntityWarrior ew in warriors){
 			ew.update();
 		}
 
+        // check for mouse input
 		ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 		if(Physics.Raycast(ray, out hit))
 		{
@@ -98,7 +120,8 @@ public class Main : MonoBehaviour {
                         ew_.setMove(false, hit.point);
                         ew_.moveTo(hit.point, 1.5F);
                         // spawn cool pointer
-
+                        cursorcone.renderer.enabled = true;
+                        cursorcone.transform.position = new VectorHelper(hit.point).add(0F, 1F, 0F);
                     }
 					
 				}
