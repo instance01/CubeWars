@@ -30,6 +30,7 @@ public class Main : MonoBehaviour {
 		blueMatoutline = Resources.Load("blueMaterialoutline", typeof(Material)) as Material;
 		blueMat = Resources.Load("blueMaterial", typeof(Material)) as Material;
         cursorcone = GameObject.Find("cone");
+        cursorcone.transform.renderer.enabled = false;
 
 		for (int i = 0; i < 10; i++) {
 			EntityWarriorRED ew = new EntityWarriorRED ();
@@ -118,7 +119,7 @@ public class Main : MonoBehaviour {
                     {
                         EntityWarrior ew_ = (EntityWarrior)selected;
                         ew_.setMove(false, hit.point);
-                        ew_.moveTo(hit.point, 1.5F);
+                        // ew_.moveTo(hit.point, 1.5F);
                         // spawn cool pointer
                         cursorcone.renderer.enabled = true;
                         cursorcone.transform.position = new VectorHelper(hit.point).add(0F, 1F, 0F);

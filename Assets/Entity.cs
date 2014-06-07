@@ -50,7 +50,7 @@ public class Entity {
         {
             cube.transform.rotation = Quaternion.LookRotation(Vector3.RotateTowards(cube.transform.position, v - cube.transform.position, Time.deltaTime * speed_, 0.0F));
             cube.transform.position = Vector3.MoveTowards(cube.transform.position, v, Time.deltaTime * speed_);
-            if ((cube.transform.position.x - v.x) < 0.2 && (cube.transform.position.z - v.z) < 0.2)
+            if (Mathf.Abs(cube.transform.position.x - v.x) < 0.1 && Mathf.Abs(cube.transform.position.z - v.z) < 0.1)
             {
                 move_ = true;
                 Main.cursorcone.renderer.enabled = false;
