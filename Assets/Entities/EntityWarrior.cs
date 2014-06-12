@@ -72,6 +72,7 @@ public class EntityWarrior : Entity {
 		txtMesh = (TextMesh)txt.AddComponent(typeof(TextMesh));
 		txtMesh.font = (Font)Resources.Load("pf_arma_five", typeof(Font));
 		txt.transform.renderer.material = (Material)Resources.Load("pf_arma_five", typeof(Material));
+        txt.transform.Rotate(67.5F, 0F, 0F);
 		//MeshRenderer meshRenderer = (MeshRenderer)txt.AddComponent(typeof(MeshRenderer));
 		/*Mesh mesh = txt.GetComponent<MeshFilter> ().mesh;
 		meshfilter.mesh = mesh;

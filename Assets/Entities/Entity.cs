@@ -31,6 +31,8 @@ public class Entity {
         health_red.transform.localScale = new Vector3(health * 0.05F, 0.005F, 0.005F);
         health_green.transform.Rotate(new Vector3(-90F, 0F, 0F));
         health_red.transform.Rotate(new Vector3(-90F, 0F, 0F));
+        health_green.transform.Rotate(67.5F, 0F, 0F);
+        health_red.transform.Rotate(67.5F, 0F, 0F);
     }
 
 
