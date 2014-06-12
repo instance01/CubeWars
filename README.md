@@ -1,11 +1,11 @@
 CubeWars
 ========
 
-Another unfinished Unity Game
+Fight the other team in a battle arena with different types of entities.
 
 
-
-Preview:
+Old preview:
 
 
 https://www.youtube.com/watch?v=goqba-sRExs
+
