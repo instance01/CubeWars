@@ -243,7 +243,29 @@ public class EntityWarrior : Entity {
 				txt.renderer.enabled = false;
 				GameObject.Destroy(health_green);
 				GameObject.Destroy(health_red);
+                Vector3 cubepos = cube.transform.localPosition;
 				GameObject.Destroy(cube, 0);
+
+                int[,] pos = new int[16, 2] { { 0, 0 }, { 0, 1 }, { 0, 2 }, { 0, 3 }, { 1, 0 }, { 1, 1 }, { 1, 2 }, { 1, 3 }, { 2, 0 }, { 2, 1 }, { 2, 2 }, { 2, 3 }, { 3, 0 }, { 3, 1 }, { 3, 2 }, { 3, 3 } };
+
+                for (int i = 0; i < 16; i++)
+                {
+                    for (int j = 0; j < 4; j++)
+                    {
+                        GameObject cube_ = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                        cube_.renderer.material.color = Color.cyan;
+                        cube_.transform.localScale = (new Vector3(0.0625F * 2, 0.0625F * 2, 0.0625F * 2));
+                        //cube_.transform.localPosition = (cubepos);
+                        cube_.transform.localPosition = (new VectorHelper(cubepos).add(pos[i, 0] * 0.0625F * 2, j * 0.0625F * 2,pos[i, 1] * 0.0625F * 2));
+
+                        cube_.AddComponent<Rigidbody>();
+                        cube_.rigidbody.AddExplosionForce((Random.Range(300.0f, 700.0f)), new Vector3(cubepos.x * 1.01F, cubepos.y * 0.9F, cubepos.z * 1.01F), (Random.Range(100.0f, 200.0f)));
+                        cube_.rigidbody.SetDensity(cube_.transform.localPosition.x);
+
+                        GameObject.Destroy(cube_, 2);
+                    }
+                    
+                }
 				if(classifier == "RED"){
 					Main.updateWarriorCounts(Main.redwarriors - 1, Main.bluewarriors);
 				}else{

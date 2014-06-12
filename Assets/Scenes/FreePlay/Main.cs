@@ -49,9 +49,10 @@ public class Main : MonoBehaviour {
 	void Update () {
         // move the camera
 		float moveVertical = Input.GetAxis("Vertical") * 4 * Time.deltaTime;
-		float moveVertical2 = Input.GetAxis("Vertical2") * 3 * Time.deltaTime;
+		//float moveVertical2 = Input.GetAxis("Vertical2") * 3 * Time.deltaTime;
 		float moveHorizontal = Input.GetAxis("Horizontal") * 3 * Time.deltaTime;
-		transform.Translate(new Vector3(moveHorizontal, moveVertical2, moveVertical));
+        Vector3 move = new Vector3(moveHorizontal * 2, moveVertical + moveVertical * 1.5F, moveVertical);
+		transform.Translate(move);
 
         // animate cursorcone
         if (!conedown)
