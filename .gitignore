@@ -3,11 +3,13 @@ Obj/
 UnityGenerated/
 Library/
 Assets/Standard Assets/
-Assets/Editor/
-Assets/Editor.meta
+Assets/Assets/Materials/
+Assets/Assets/Materials.meta
+Assets/Assets/Editor/
+Assets/Assets/Editor.meta
 Assets/Standard Assets.meta
-Assets/Builtin skin/
-Assets/Builtin skin.meta
+Assets/Assets/Builtin skin/
+Assets/Assets/Builtin skin.meta
 
 BUILD/
 ExportedObj/
