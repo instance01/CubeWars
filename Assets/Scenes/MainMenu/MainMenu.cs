@@ -19,7 +19,7 @@ public class MainMenu : MonoBehaviour {
 
         if (GUI.Button(new Rect(Screen.width / 2 - 100, 120, 200, 30), "Campaign"))
         {
-			//Application.LoadLevel (2);
+			Application.LoadLevel (2);
 		}
 
         if (GUI.Button(new Rect(Screen.width / 2 - 100, 160, 200, 30), "Multiplayer"))

@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Linq;
+using Assets.GamePlay;
 
 // A warrior moves around very aggressively and fast and is a short ranged entity
 
@@ -49,9 +50,9 @@ public class EntityWarrior : Entity {
 		}
 		cube.transform.localScale = new Vector3 (0.5F, 0.5F, 0.5F);
 		if (classifier == "RED") {
-			cube.renderer.material = Main.redMat;
+			cube.renderer.material = Materials.redMat;
 		} else if (classifier == "BLUE") {
-			cube.renderer.material = Main.blueMat;
+            cube.renderer.material = Materials.blueMat;
 		}
 
 		// adds components to cube
@@ -109,9 +110,9 @@ public class EntityWarrior : Entity {
 		attackcube.name = "EntityWarrior" + classifier + "_BULLET";
 		attackcube.transform.localScale = new Vector3 (0.1F, 0.1F, 0.1F);
 		if (classifier == "RED") {
-			attackcube.renderer.material = Main.redMat;
+            attackcube.renderer.material = Materials.redMat;
 		} else if (classifier == "BLUE") {
-			attackcube.renderer.material = Main.blueMat;
+            attackcube.renderer.material = Materials.blueMat;
 		}
 		attackcube.transform.localRotation = cube.transform.localRotation;
 		attackcube.transform.localPosition = new VectorHelper(cube.transform.localPosition).add(0, 1, 0);
@@ -284,15 +285,15 @@ public class EntityWarrior : Entity {
 	public void updateMaterial(bool jump){
 		if (classifier == "RED") {
 			if(!jump){
-				getCube().transform.renderer.material = Main.redMat;
+                getCube().transform.renderer.material = Materials.redMat;
 			}else{
-				getCube().transform.renderer.material = Main.redMatoutline;
+                getCube().transform.renderer.material = Materials.redMatoutline;
 			}
 		} else if (classifier == "BLUE") {
 			if(!jump){
-				getCube().transform.renderer.material = Main.blueMat;
+                getCube().transform.renderer.material = Materials.blueMat;
 			}else{
-				getCube().transform.renderer.material = Main.blueMatoutline;
+                getCube().transform.renderer.material = Materials.blueMatoutline;
 			}
 		}
 	}

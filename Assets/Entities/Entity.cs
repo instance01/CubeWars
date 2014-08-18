@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using Assets.GamePlay;
 
 public class Entity {
     public GameObject health_green;
@@ -25,8 +26,8 @@ public class Entity {
         health_red = new GameObject();
         health_green = GameObject.CreatePrimitive(PrimitiveType.Plane);
         health_red = GameObject.CreatePrimitive(PrimitiveType.Plane);
-        health_green.transform.renderer.material = (Material)Resources.Load("greenMaterial", typeof(Material));
-        health_red.transform.renderer.material = Main.redMat;
+        health_green.transform.renderer.material = Materials.greenMat;
+        health_red.transform.renderer.material = Materials.redMat;
         health_green.transform.localScale = new Vector3(health * 0.05F, 0.005F, 0.005F);
         health_red.transform.localScale = new Vector3(health * 0.05F, 0.005F, 0.005F);
         health_green.transform.Rotate(new Vector3(-90F, 0F, 0F));
