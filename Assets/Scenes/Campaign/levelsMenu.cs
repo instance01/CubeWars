@@ -9,6 +9,11 @@ public class levelsMenu : MonoBehaviour {
 
         GUI.skin = skin;
 
+        if (GUI.Button(new Rect(Screen.width - 100, 50, 70, 35), "Back"))
+        {
+            Application.LoadLevel(0);
+        }
+
         if (GUI.Button(new Rect(Screen.width / 2 - 400, 100, 100, 100), "1\nInit"))
         {
 			
