@@ -11,10 +11,12 @@ namespace Assets.Blocks
         public bool breakable = true;
         public String name = "Block";
 
+        public List<GameObject> rawcubes;
         public GameObject cube;
 
         public Block(List<GameObject> cubes, string name)
         {
+            this.rawcubes = cubes;
             cube = new GameObject();
             this.name = name;
             cube.name = name;

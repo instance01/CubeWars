@@ -42,8 +42,10 @@ public class Main : MonoBehaviour {
 			bluewarriors++;
 		}
 
-        BlockSpawner spawner = new BlockSpawner(10, 0, 4, "RED");
+        BlockSpawner spawner = new BlockSpawner(10, 0, 14, "BLUE");
+        BlockSpawner spawner2 = new BlockSpawner(28, 0, 24, "RED");
         blocks.Add(spawner);
+        blocks.Add(spawner2);
 	}
 
 

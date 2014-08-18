@@ -13,6 +13,7 @@ namespace Assets.GamePlay
         public static Material blueMatoutline;
         public static Material blueMat;
         public static Material greenMat;
+        public static Material blackMat;
 
         public static void init()
         {
@@ -21,6 +22,7 @@ namespace Assets.GamePlay
             blueMatoutline = Resources.Load("blueMaterialoutline", typeof(Material)) as Material;
             blueMat = Resources.Load("blueMaterial", typeof(Material)) as Material;
             greenMat = Resources.Load("greenMaterial", typeof(Material)) as Material;
+            blackMat = Resources.Load("blackMaterial", typeof(Material)) as Material;
         }
 
 
