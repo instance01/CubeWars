@@ -6,16 +6,34 @@ using System.Text;
 
 namespace Assets.Blocks
 {
-    class Block
+    public class Block
     {
         public bool breakable = true;
         public String name = "Block";
 
         public GameObject cube;
 
-        public Block(GameObject cube)
+        public Block(List<GameObject> cubes, string name)
         {
-            this.cube = cube;
+            cube = new GameObject();
+            this.name = name;
+            cube.name = name;
+            foreach(GameObject go in cubes){
+                go.transform.parent = cube.transform;
+            }
+        }
+
+        /*public Block(List<GameObject> cubes, GameObject parent)
+        {
+            foreach(GameObject go in cubes){
+                go.transform.parent = parent.transform;
+            }
+            this.cube = parent;
+        }*/
+
+        public virtual void update()
+        {
+
         }
     }
 }

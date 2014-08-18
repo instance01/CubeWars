@@ -24,7 +24,7 @@ public class EntityWarrior : Entity {
 	Entity target;
 
 
-	public EntityWarrior(string c){
+	public EntityWarrior(string c, Vector3 spawn){
 		this.classifier = c;
 		if (classifier == "RED")
 		{
@@ -34,19 +34,19 @@ public class EntityWarrior : Entity {
 		{
 			enemyClassifier = "RED";
 		}
-		createGraphics ();
+		createGraphics (spawn);
 	}
 
-	public void createGraphics(){
+	public void createGraphics(Vector3 spawn){
 
 		// creates the cube
 		cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
 		cube.name = "EntityWarrior" + classifier;
         cube.tag = "EntityWarrior" + classifier;
 		if (classifier == "RED") {
-			cube.transform.position = new VectorHelper(Main.spawnLocation).add(Random.Range(20, 30), 0, Random.Range (20, 30));
+			cube.transform.position = spawn;
 		} else if (classifier == "BLUE") {
-			cube.transform.position = new VectorHelper(Main.spawnLocation).add(Random.Range(10, 20), 0, Random.Range (10, 20));
+			cube.transform.position = spawn;
 		}
 		cube.transform.localScale = new Vector3 (0.5F, 0.5F, 0.5F);
 		if (classifier == "RED") {

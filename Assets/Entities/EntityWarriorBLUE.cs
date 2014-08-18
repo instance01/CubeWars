@@ -3,7 +3,8 @@ using System.Collections;
 
 public class EntityWarriorBLUE : EntityWarrior {
 	
-	public EntityWarriorBLUE() : base("BLUE"){
+	public EntityWarriorBLUE(Vector3 spawn) : base("BLUE", spawn){
 	}
+
 }
 

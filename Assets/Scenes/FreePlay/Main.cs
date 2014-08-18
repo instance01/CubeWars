@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Assets.GamePlay;
+using Assets.Blocks;
 
 public class Main : MonoBehaviour {
 
@@ -15,6 +16,7 @@ public class Main : MonoBehaviour {
 	public static int redwarriors = 0;
 	public static int bluewarriors = 0;
 
+    public List<Block> blocks = new List<Block>();
 
     public static GameObject cursorcone;
     bool conedown = true;
@@ -29,16 +31,19 @@ public class Main : MonoBehaviour {
         cursorcone.transform.renderer.enabled = false;
 
 		for (int i = 0; i < 10; i++) {
-			EntityWarriorRED ew = new EntityWarriorRED ();
+			EntityWarriorRED ew = new EntityWarriorRED (new VectorHelper(Main.spawnLocation).add(Random.Range(20, 30), 0, Random.Range (20, 30)));
 			warriors.Add (ew);
 			redwarriors++;
 		}
 
 		for (int i = 0; i < 10; i++) {
-			EntityWarriorBLUE ew = new EntityWarriorBLUE ();
+            EntityWarriorBLUE ew = new EntityWarriorBLUE(new VectorHelper(Main.spawnLocation).add(Random.Range(10, 20), 0, Random.Range(10, 20)));
 			warriors.Add (ew);
 			bluewarriors++;
 		}
+
+        BlockSpawner spawner = new BlockSpawner(10, 0, 4, "RED");
+        blocks.Add(spawner);
 	}
 
 
@@ -70,6 +75,9 @@ public class Main : MonoBehaviour {
 		}
 
         mouseclickhandler.update(warriors);
+        foreach(Block b in blocks){
+            b.update();
+        }
 	}
 
 	void OnGUI() {
