@@ -15,13 +15,13 @@ public class IngameGUI : MonoBehaviour {
     {
         GUI.skin = skin;
         size = GUI.skin.GetStyle("Label").CalcHeight(new GUIContent("test"), 20F);
-        GUI.Label(new Rect(10, Screen.height - 40 - currentheight, 400, currentheight), response);
+        GUI.Label(new Rect(10, Screen.height - 40 - currentheight, 600, currentheight), response);
         Event e = Event.current;
         if (e.keyCode == KeyCode.Return)
         {
             ret = true;
             GUI.SetNextControlName("chatfield");
-            GUI.TextField(new Rect(10, Screen.height - 40, 200, 30), "", 25);
+            GUI.TextField(new Rect(10, Screen.height - 40, 250, 30), "", 40);
             if (cmd == "")
             {
                 ret = false;
@@ -34,7 +34,7 @@ public class IngameGUI : MonoBehaviour {
         }
         else if (ret == false)
         {
-            cmd = GUI.TextField(new Rect(10, Screen.height - 40, 200, 30), cmd, 25);
+            cmd = GUI.TextField(new Rect(10, Screen.height - 40, 250, 30), cmd, 40);
         }
 
         if (open)
