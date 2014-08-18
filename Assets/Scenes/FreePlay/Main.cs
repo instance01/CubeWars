@@ -91,6 +91,16 @@ public class Main : MonoBehaviour {
         else if (Input.GetKeyDown(KeyCode.O))
         {
             IngameGUI.setOpen(!IngameGUI.isOpen());
+        } 
+        else if (Input.GetKeyDown("f2"))
+        {
+            string screenshotFilename = "screenshot_" + System.DateTime.Now.Ticks + ".png";
+            int count = 0;
+            while(System.IO.File.Exists(screenshotFilename)){
+                count++;
+                screenshotFilename = "screenshot_" + System.DateTime.Now.Ticks + "_" + count + ".png";
+            }  
+            Application.CaptureScreenshot(screenshotFilename);
         }
 	}
 
