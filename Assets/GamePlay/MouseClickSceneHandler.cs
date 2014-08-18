@@ -80,6 +80,10 @@ namespace Assets.GamePlay
                             Main.cursorcone.renderer.enabled = true;
                             Main.cursorcone.transform.position = new VectorHelper(hit.point).add(0F, 1F, 0F);
                         }
+                        else if (Input.GetMouseButton(1))
+                        {
+                            selected = null;
+                        }
 
                     }
                 }
