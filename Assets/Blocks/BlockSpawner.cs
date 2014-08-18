@@ -80,14 +80,14 @@ namespace Assets.Blocks
                 if (clazz == "RED")
                 {
                     EntityWarriorRED ew = new EntityWarriorRED(new VectorHelper(new Vector3(x, y, z)).add(UnityEngine.Random.Range(1, 5), 1, UnityEngine.Random.Range(1, 5)));
-                    Main.warriors.Add(ew);
-                    Main.redwarriors++;
+                    Main.getMain().warriors.Add(ew);
+                    Main.getMain().addWarriorCount(true, false);
                 }
                 else if (clazz == "BLUE")
                 {
                     EntityWarriorBLUE ew = new EntityWarriorBLUE(new VectorHelper(new Vector3(x, y, z)).add(UnityEngine.Random.Range(1, 5), 1, UnityEngine.Random.Range(1, 5)));
-                    Main.warriors.Add(ew);
-                    Main.bluewarriors++;
+                    Main.getMain().warriors.Add(ew);
+                    Main.getMain().addWarriorCount(false, true);
                 }
                 
             }

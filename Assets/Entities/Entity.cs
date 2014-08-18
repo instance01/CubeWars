@@ -56,7 +56,7 @@ public class Entity {
             if (Mathf.Abs(cube.transform.position.x - v.x) < 0.1 && Mathf.Abs(cube.transform.position.z - v.z) < 0.1)
             {
                 move_ = true;
-                Main.cursorcone.renderer.enabled = false;
+                Main.getMain().cursorcone.renderer.enabled = false;
             }
         }
     }

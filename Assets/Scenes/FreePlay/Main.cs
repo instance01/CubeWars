@@ -11,17 +11,20 @@ public class Main : MonoBehaviour {
     CameraHandler camhandler;
     MouseClickSceneHandler mouseclickhandler;
 
-	public static Vector3 spawnLocation = new Vector3(0F, 2.5F, 0F);
-	public static List<EntityWarrior> warriors = new List<EntityWarrior>();
-	public static int redwarriors = 0;
-	public static int bluewarriors = 0;
+	public Vector3 spawnLocation = new Vector3(0F, 2.5F, 0F);
+	public List<EntityWarrior> warriors = new List<EntityWarrior>();
+	public int redwarriors = 0;
+	public int bluewarriors = 0;
 
     public List<Block> blocks = new List<Block>();
 
-    public static GameObject cursorcone;
+    public GameObject cursorcone;
     bool conedown = true;
 
+    static Main main;
+
 	void Start () {
+        main = this;
         Materials.init();
 
         camhandler = new CameraHandler(transform.gameObject);
@@ -31,13 +34,13 @@ public class Main : MonoBehaviour {
         cursorcone.transform.renderer.enabled = false;
 
 		for (int i = 0; i < 10; i++) {
-			EntityWarriorRED ew = new EntityWarriorRED (new VectorHelper(Main.spawnLocation).add(Random.Range(20, 30), 0, Random.Range (20, 30)));
+			EntityWarriorRED ew = new EntityWarriorRED (new VectorHelper(Main.getMain().spawnLocation).add(Random.Range(20, 30), 0, Random.Range (20, 30)));
 			warriors.Add (ew);
 			redwarriors++;
 		}
 
 		for (int i = 0; i < 10; i++) {
-            EntityWarriorBLUE ew = new EntityWarriorBLUE(new VectorHelper(Main.spawnLocation).add(Random.Range(10, 20), 0, Random.Range(10, 20)));
+            EntityWarriorBLUE ew = new EntityWarriorBLUE(new VectorHelper(Main.getMain().spawnLocation).add(Random.Range(10, 20), 0, Random.Range(10, 20)));
 			warriors.Add (ew);
 			bluewarriors++;
 		}
@@ -73,12 +76,21 @@ public class Main : MonoBehaviour {
         
         // update all warriors
 		foreach(EntityWarrior ew in warriors){
+            // TODO this function lags very hard, fix
 			ew.update();
 		}
 
         mouseclickhandler.update(warriors);
         foreach(Block b in blocks){
             b.update();
+        }
+
+        if (Input.GetKeyDown (KeyCode.Escape)){
+            Application.LoadLevel(0);
+        }
+        else if (Input.GetKeyDown(KeyCode.O))
+        {
+            IngameGUI.setOpen(!IngameGUI.isOpen());
         }
 	}
 
@@ -95,9 +107,26 @@ public class Main : MonoBehaviour {
 		GUI.Label (new Rect (Screen.width / 2 + 30,5,10,20), "B");
 	}
 
-	public static void updateWarriorCounts(int r, int b){
+	public void updateWarriorCounts(int r, int b){
 		redwarriors = r;
 		bluewarriors = b;
 	}
+
+    public void addWarriorCount(bool r, bool b)
+    {
+        if (r)
+        {
+            redwarriors += 1;
+        }
+        else if (b)
+        {
+            bluewarriors += 1;
+        }
+    }
+
+    public static Main getMain()
+    {
+        return main;
+    }
 
 }

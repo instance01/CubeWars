@@ -148,7 +148,7 @@ public class EntityWarrior : Entity {
                 EntityID e = (EntityID)closestGameObject.GetComponent(typeof(EntityID));
                 int tempid = e.getID();
 
-                foreach (EntityWarrior ew in Main.warriors)
+                foreach (EntityWarrior ew in Main.getMain().warriors)
                 {
                     if (ew.getEntityID().getID() == tempid)
                     {
@@ -240,7 +240,7 @@ public class EntityWarrior : Entity {
 			if (this.health < 1){
 				// dead
 				dead = true;
-				Main.warriors.Remove(this);
+				Main.getMain().warriors.Remove(this);
 				said = false;
 				txt.renderer.enabled = false;
 				GameObject.Destroy(health_green);
@@ -269,9 +269,9 @@ public class EntityWarrior : Entity {
                     
                 }
 				if(classifier == "RED"){
-					Main.updateWarriorCounts(Main.redwarriors - 1, Main.bluewarriors);
+                    Main.getMain().updateWarriorCounts(Main.getMain().redwarriors - 1, Main.getMain().bluewarriors);
 				}else{
-					Main.updateWarriorCounts(Main.redwarriors, Main.bluewarriors - 1);
+                    Main.getMain().updateWarriorCounts(Main.getMain().redwarriors, Main.getMain().bluewarriors - 1);
 				}
                 return;
 			}

@@ -20,6 +20,7 @@ public class IngameGUI : MonoBehaviour {
         if (e.keyCode == KeyCode.Return)
         {
             ret = true;
+            GUI.SetNextControlName("chatfield");
             GUI.TextField(new Rect(10, Screen.height - 40, 200, 30), "", 25);
             if (cmd == "")
             {
@@ -48,6 +49,11 @@ public class IngameGUI : MonoBehaviour {
     public static void setOpen(bool o)
     {
         open = o;
+    }
+
+    public static bool isOpen()
+    {
+        return open;
     }
 
     public void execute()

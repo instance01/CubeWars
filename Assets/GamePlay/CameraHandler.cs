@@ -24,19 +24,19 @@ namespace Assets.GamePlay
             cam.transform.Translate(move, Space.World);
 
             // automove camera
-            if (Input.mousePosition.x < 1)
+            if (Input.mousePosition.x < 2)
             {
                 cam.transform.Translate(new Vector3(-0.25F, 0, 0), Space.World);
             }
-            else if (Input.mousePosition.x > Screen.width - 1)
+            else if (Input.mousePosition.x > Screen.width - 2)
             {
                 cam.transform.Translate(new Vector3(0.25F, 0, 0), Space.World);
             }
-            if (Input.mousePosition.y < 1)
+            if (Input.mousePosition.y < 2)
             {
                 cam.transform.Translate(new Vector3(0, 0, -0.25F), Space.World);
             }
-            else if (Input.mousePosition.y > Screen.height - 1)
+            else if (Input.mousePosition.y > Screen.height - 2)
             {
                 cam.transform.Translate(new Vector3(0, 0, 0.25F), Space.World);
             }

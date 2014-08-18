@@ -77,8 +77,8 @@ namespace Assets.GamePlay
                             ew_.setMove(false, hit.point);
                             // ew_.moveTo(hit.point, 1.5F);
                             // spawn cool pointer
-                            Main.cursorcone.renderer.enabled = true;
-                            Main.cursorcone.transform.position = new VectorHelper(hit.point).add(0F, 1F, 0F);
+                            Main.getMain().cursorcone.renderer.enabled = true;
+                            Main.getMain().cursorcone.transform.position = new VectorHelper(hit.point).add(0F, 1F, 0F);
                         }
                         else if (Input.GetMouseButton(1))
                         {
