@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using Assets.Entities;
 
 public class IngameGUI : MonoBehaviour {
 
@@ -111,6 +112,36 @@ public class IngameGUI : MonoBehaviour {
         if (cmd == "/help")
         {
             response += "Here's a list of current available commands:";
+        }
+        else if (cmd.StartsWith("/spawnentity"))
+        {
+            string[] args = cmd.Split(' ');
+            int count = 1;
+            int id = 0;
+            if (args.Length < 2)
+            {
+                response += "Usage. /spawnentity [id] [count]. Possible ids: 0, 1";
+                return;
+            }
+            else if (args.Length > 2)
+            {
+               int.TryParse(args[2], out count);
+            }
+            int.TryParse(args[1], out id);
+            for (int i = 0; i < count; i++)
+            {
+                EntityWarrior ew = new EntityWarrior(id, new VectorHelper(Main.getMain().spawnLocation).add(Random.Range(20, 30), 0, Random.Range(20, 30)));
+                Main.getMain().entities.Add(ew);
+                if (id == 0)
+                {
+                    Main.getMain().redwarriors++;
+                }
+                else if (id == 1)
+                {
+                    Main.getMain().bluewarriors++;
+                }
+            }
+            response += "Successfully spawned " + args[2] + " entities of classifier " + Classifier.classifier[id] + ".";
         }
         else
         {
