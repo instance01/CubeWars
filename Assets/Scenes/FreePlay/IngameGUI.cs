@@ -11,9 +11,38 @@ public class IngameGUI : MonoBehaviour {
     int currentheight = 20;
     float size;
 
+    // fps
+    public float updateInterval = 0.5F;
+
+    private float accum = 0;
+    private int frames = 0;
+    private float timeleft;
+    string fps_string = "";
+
+    void Start()
+    {
+        timeleft = updateInterval;
+    }
+
+    void Update()
+    {
+        timeleft -= Time.deltaTime;
+        accum += Time.timeScale / Time.deltaTime;
+        ++frames;
+        if (timeleft <= 0.0)
+        {
+            float fps = accum / frames;
+            fps_string = System.String.Format("{0:F2} FPS", fps);
+            timeleft = updateInterval;
+            accum = 0.0F;
+            frames = 0;
+        }
+    }
+
     void OnGUI()
     {
         GUI.skin = skin;
+        GUI.Label(new Rect(Screen.width - 100, 20, 100, 20), fps_string);
         size = GUI.skin.GetStyle("Label").CalcHeight(new GUIContent("test"), 20F);
         GUI.Label(new Rect(10, Screen.height - 40 - currentheight, 600, currentheight), response);
         Event e = Event.current;

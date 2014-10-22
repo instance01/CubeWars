@@ -20,8 +20,4 @@ public class EntityID : MonoBehaviour {
 		return id;
 	}
 
-	// Update is called once per frame
-	void Update () {
-	
-	}
 }

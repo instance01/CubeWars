@@ -18,7 +18,7 @@ namespace Assets.GamePlay
 
         }
 
-        public void update(List<EntityWarrior> warriors)
+        public void update(List<Entity> entities)
         {
             // check for mouse input
             ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -32,7 +32,7 @@ namespace Assets.GamePlay
                         EntityID e = (EntityID)hit.collider.GetComponent(typeof(EntityID));
                         int tempid = e.getID();
 
-                        foreach (EntityWarrior ew in warriors)
+                        foreach (EntityWarrior ew in entities)
                         {
                             if (ew.getEntityID().getID() == tempid)
                             {
@@ -51,7 +51,7 @@ namespace Assets.GamePlay
                         EntityID e = (EntityID)hit.collider.GetComponent(typeof(EntityID));
                         int tempid = e.getID();
 
-                        foreach (EntityWarrior ew in warriors)
+                        foreach (EntityWarrior ew in entities)
                         {
                             if (ew.getEntityID().getID() == tempid)
                             {
@@ -64,7 +64,7 @@ namespace Assets.GamePlay
                 }
                 else
                 {
-                    foreach (EntityWarrior ew in warriors)
+                    foreach (EntityWarrior ew in entities)
                     {
                         ew.updateMaterial(false);
                     }

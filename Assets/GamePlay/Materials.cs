@@ -25,6 +25,5 @@ namespace Assets.GamePlay
             blackMat = Resources.Load("blackMaterial", typeof(Material)) as Material;
         }
 
-
     }
 }

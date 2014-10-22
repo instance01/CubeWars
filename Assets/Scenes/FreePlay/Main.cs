@@ -13,7 +13,7 @@ public class Main : MonoBehaviour
     MouseClickSceneHandler mouseclickhandler;
 
     public Vector3 spawnLocation = new Vector3(0F, 2.5F, 0F);
-    public List<EntityWarrior> warriors = new List<EntityWarrior>();
+    public List<Entity> entities = new List<Entity>();
     public int redwarriors = 0;
     public int bluewarriors = 0;
 
@@ -37,15 +37,15 @@ public class Main : MonoBehaviour
 
         for (int i = 0; i < 30; i++)
         {
-            EntityWarriorRED ew = new EntityWarriorRED(new VectorHelper(Main.getMain().spawnLocation).add(Random.Range(20, 30), 0, Random.Range(20, 30)));
-            warriors.Add(ew);
+            EntityWarrior ew = new EntityWarrior(0, new VectorHelper(Main.getMain().spawnLocation).add(Random.Range(20, 30), 0, Random.Range(20, 30)));
+            entities.Add(ew);
             redwarriors++;
         }
 
         for (int i = 0; i < 30; i++)
         {
-            EntityWarriorBLUE ew = new EntityWarriorBLUE(new VectorHelper(Main.getMain().spawnLocation).add(Random.Range(10, 20), 0, Random.Range(10, 20)));
-            warriors.Add(ew);
+            EntityWarrior ew = new EntityWarrior(1, new VectorHelper(Main.getMain().spawnLocation).add(Random.Range(10, 20), 0, Random.Range(10, 20)));
+            entities.Add(ew);
             bluewarriors++;
         }
 
@@ -80,12 +80,12 @@ public class Main : MonoBehaviour
 
 
         // update all warriors
-        foreach (EntityWarrior ew in warriors)
+        foreach (Entity ew in entities)
         {
             ew.update();
         }
 
-        mouseclickhandler.update(warriors);
+        mouseclickhandler.update(entities);
         foreach (Block b in blocks)
         {
             b.update();
