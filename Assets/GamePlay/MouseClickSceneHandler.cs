@@ -15,7 +15,7 @@ namespace Assets.GamePlay
 
         public MouseClickSceneHandler()
         {
-            
+
         }
 
         public void update(List<EntityWarrior> warriors)

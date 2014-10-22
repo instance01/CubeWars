@@ -4,17 +4,18 @@ using System.Collections.Generic;
 using Assets.GamePlay;
 using Assets.Blocks;
 
-public class Main : MonoBehaviour {
+public class Main : MonoBehaviour
+{
 
-	public static List<string> words = new List<string>(new string[] { "Hi", "What's up fella!", "Dudee", "Dudeeee", "I'm bored.", "?", "!", "Mhm", "Hmmm", "I hate you", "I love you", "Nope Nope Nope", "Gawd", "Ugh", "yaaaaay", "mkay", "sup", "rude", "Not cool man", "so", "Fu" });
+    public static List<string> words = new List<string>(new string[] { "Hi", "What's up fella!", "Dudee", "Dudeeee", "I'm bored.", "?", "!", "Mhm", "Hmmm", "I hate you", "I love you", "Nope Nope Nope", "Gawd", "Ugh", "yaaaaay", "mkay", "sup", "rude", "Not cool man", "so", "Fu" });
 
     CameraHandler camhandler;
     MouseClickSceneHandler mouseclickhandler;
 
-	public Vector3 spawnLocation = new Vector3(0F, 2.5F, 0F);
-	public List<EntityWarrior> warriors = new List<EntityWarrior>();
-	public int redwarriors = 0;
-	public int bluewarriors = 0;
+    public Vector3 spawnLocation = new Vector3(0F, 2.5F, 0F);
+    public List<EntityWarrior> warriors = new List<EntityWarrior>();
+    public int redwarriors = 0;
+    public int bluewarriors = 0;
 
     public List<Block> blocks = new List<Block>();
 
@@ -23,7 +24,8 @@ public class Main : MonoBehaviour {
 
     static Main main;
 
-	void Start () {
+    void Start()
+    {
         main = this;
         Materials.init();
 
@@ -33,26 +35,29 @@ public class Main : MonoBehaviour {
         cursorcone = GameObject.Find("cone");
         cursorcone.transform.renderer.enabled = false;
 
-		for (int i = 0; i < 10; i++) {
-			EntityWarriorRED ew = new EntityWarriorRED (new VectorHelper(Main.getMain().spawnLocation).add(Random.Range(20, 30), 0, Random.Range (20, 30)));
-			warriors.Add (ew);
-			redwarriors++;
-		}
+        for (int i = 0; i < 30; i++)
+        {
+            EntityWarriorRED ew = new EntityWarriorRED(new VectorHelper(Main.getMain().spawnLocation).add(Random.Range(20, 30), 0, Random.Range(20, 30)));
+            warriors.Add(ew);
+            redwarriors++;
+        }
 
-		for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 30; i++)
+        {
             EntityWarriorBLUE ew = new EntityWarriorBLUE(new VectorHelper(Main.getMain().spawnLocation).add(Random.Range(10, 20), 0, Random.Range(10, 20)));
-			warriors.Add (ew);
-			bluewarriors++;
-		}
+            warriors.Add(ew);
+            bluewarriors++;
+        }
 
         BlockSpawner spawner = new BlockSpawner(10, 0, 14, "BLUE");
         BlockSpawner spawner2 = new BlockSpawner(28, 0, 24, "RED");
         blocks.Add(spawner);
         blocks.Add(spawner2);
-	}
+    }
 
 
-	void Update () {
+    void Update()
+    {
         camhandler.update();
 
         // animate cursorcone
@@ -64,7 +69,7 @@ public class Main : MonoBehaviour {
                 conedown = true;
             }
         }
-        else if(conedown)
+        else if (conedown)
         {
             cursorcone.transform.Translate(new Vector3(0F, 0F, 0.03F));
             if (cursorcone.transform.position.y < 0.7)
@@ -72,55 +77,60 @@ public class Main : MonoBehaviour {
                 conedown = false;
             }
         }
-        
-        
+
+
         // update all warriors
-		foreach(EntityWarrior ew in warriors){
-            // TODO this function lags very hard, fix
-			ew.update();
-		}
+        foreach (EntityWarrior ew in warriors)
+        {
+            ew.update();
+        }
 
         mouseclickhandler.update(warriors);
-        foreach(Block b in blocks){
+        foreach (Block b in blocks)
+        {
             b.update();
         }
 
-        if (Input.GetKeyDown (KeyCode.Escape)){
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
             Application.LoadLevel(0);
         }
         else if (Input.GetKeyDown(KeyCode.O))
         {
             IngameGUI.setOpen(!IngameGUI.isOpen());
-        } 
+        }
         else if (Input.GetKeyDown("f2"))
         {
             string screenshotFilename = "screenshot_" + System.DateTime.Now.Ticks + ".png";
             int count = 0;
-            while(System.IO.File.Exists(screenshotFilename)){
+            while (System.IO.File.Exists(screenshotFilename))
+            {
                 count++;
                 screenshotFilename = "screenshot_" + System.DateTime.Now.Ticks + "_" + count + ".png";
-            }  
+            }
             Application.CaptureScreenshot(screenshotFilename);
         }
-	}
+    }
 
-	void OnGUI() {
-		GUIStyle style = GUI.skin.GetStyle("Label");
-		style.alignment = TextAnchor.UpperCenter;
-		string re = redwarriors.ToString ();
-		string be = bluewarriors.ToString ();
-		style.normal.textColor = Color.red;
-		GUI.Label (new Rect (Screen.width / 2 - 40,5,10,20), "R");
-		style.normal.textColor = Color.white;
-		GUI.Label (new Rect (Screen.width / 2 - 30,5,60,20), re + " : " + be);
-		style.normal.textColor = Color.blue;
-		GUI.Label (new Rect (Screen.width / 2 + 30,5,10,20), "B");
-	}
+    void OnGUI()
+    {
+        GUIStyle style = GUI.skin.GetStyle("Label");
+        style.alignment = TextAnchor.UpperCenter;
+        string re = redwarriors.ToString();
+        string be = bluewarriors.ToString();
+        style.normal.textColor = Color.red;
+        GUI.Label(new Rect(Screen.width / 2 - 40, 5, 10, 20), "R");
+        style.normal.textColor = Color.white;
+        GUI.Label(new Rect(Screen.width / 2 - 30, 5, 60, 20), re + " : " + be);
+        style.normal.textColor = Color.blue;
+        GUI.Label(new Rect(Screen.width / 2 + 30, 5, 10, 20), "B");
+    }
 
-	public void updateWarriorCounts(int r, int b){
-		redwarriors = r;
-		bluewarriors = b;
-	}
+    public void updateWarriorCounts(int r, int b)
+    {
+        redwarriors = r;
+        bluewarriors = b;
+    }
 
     public void addWarriorCount(bool r, bool b)
     {

@@ -2,7 +2,8 @@
 using System.Collections;
 using Assets.GamePlay;
 
-public class Entity {
+public class Entity
+{
     public GameObject health_green;
     public GameObject health_red;
     public int health = 3;
@@ -15,9 +16,10 @@ public class Entity {
 
     public Vector3 moveto;
 
-	public Entity(){
+    public Entity()
+    {
 
-	}
+    }
 
     public void createHealthbarGraphics()
     {
@@ -43,7 +45,8 @@ public class Entity {
         health_red.transform.localPosition = cube.transform.localPosition;
         health_red.transform.Translate(0F, 0.5F, 1F);
         health_green.transform.Translate(0F - (maxhealth - health) * 0.25F, 0.525F, 1F);
-        health_green.transform.localScale = new Vector3(health * 0.05F, 0.005F, 0.01F);
+        //health_green.transform.localScale = new Vector3(health * 0.05F, 0.005F, 0.01F);
+        health_green.transform.localScale.Set(health * 0.05F, 0.005F, 0.01F);
     }
 
 
