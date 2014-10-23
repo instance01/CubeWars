@@ -17,10 +17,10 @@ namespace Assets.GamePlay
         public void update()
         {
             // move the camera
+            float moveScroll = -Input.GetAxis("Mouse ScrollWheel") * 500 * Time.deltaTime;
             float moveVertical = Input.GetAxis("Vertical") * 4 * Time.deltaTime;
-            //float moveVertical2 = Input.GetAxis("Vertical2") * 3 * Time.deltaTime;
             float moveHorizontal = Input.GetAxis("Horizontal") * 3 * Time.deltaTime;
-            Vector3 move = new Vector3(moveHorizontal * 4F, 0, moveVertical * 3F);
+            Vector3 move = new Vector3(moveHorizontal * 4F, moveScroll, moveVertical * 3F);
             cam.transform.Translate(move, Space.World);
 
             // automove camera

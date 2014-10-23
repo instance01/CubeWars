@@ -1,9 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
 using Assets.Entities;
+using Assets.GamePlay.Util;
+using System.Collections.Generic;
 
-public class IngameGUI : MonoBehaviour {
-
+public class IngameGUI : MonoBehaviour
+{
+    System.Random random;
     public GUISkin skin;
     private static bool open = false;
     public string cmd = "";
@@ -23,6 +26,7 @@ public class IngameGUI : MonoBehaviour {
     void Start()
     {
         timeleft = updateInterval;
+        random = new System.Random();
     }
 
     void Update()
@@ -43,7 +47,14 @@ public class IngameGUI : MonoBehaviour {
     void OnGUI()
     {
         GUI.skin = skin;
-        GUI.Label(new Rect(Screen.width - 100, 20, 100, 20), fps_string);
+
+        // FPS Label
+        GUI.Label(new Rect(Screen.width - 150, 20, 150, 20), fps_string);
+
+        // GameObject and Entity count Labels
+        GUI.Label(new Rect(Screen.width - 150, 40, 150, 20), UnityEngine.Object.FindObjectsOfType<GameObject>().Length.ToString() + " GameObjects");
+        GUI.Label(new Rect(Screen.width - 150, 60, 150, 20), Main.getMain().entities.Count.ToString() + " Entities");
+
         size = GUI.skin.GetStyle("Label").CalcHeight(new GUIContent("test"), 20F);
         GUI.Label(new Rect(10, Screen.height - 40 - currentheight, 600, currentheight), response);
         Event e = Event.current;
@@ -113,7 +124,7 @@ public class IngameGUI : MonoBehaviour {
         {
             response += "Here's a list of current available commands:";
         }
-        else if (cmd.StartsWith("/spawnentity"))
+        else if (cmd.ToLower().StartsWith("/spawnentity"))
         {
             string[] args = cmd.Split(' ');
             int count = 1;
@@ -125,23 +136,29 @@ public class IngameGUI : MonoBehaviour {
             }
             else if (args.Length > 2)
             {
-               int.TryParse(args[2], out count);
+                int.TryParse(args[2], out count);
             }
             int.TryParse(args[1], out id);
+            int x = random.Next(20, 30);
+            int y = random.Next(20, 30);
+            if (id == 1)
+            {
+                x = random.Next(10, 20);
+                y = random.Next(10, 20);
+            }
             for (int i = 0; i < count; i++)
             {
-                EntityWarrior ew = new EntityWarrior(id, new VectorHelper(Main.getMain().spawnLocation).add(Random.Range(20, 30), 0, Random.Range(20, 30)));
-                Main.getMain().entities.Add(ew);
-                if (id == 0)
-                {
-                    Main.getMain().redwarriors++;
-                }
-                else if (id == 1)
-                {
-                    Main.getMain().bluewarriors++;
-                }
+                EntityUtil.spawnEntity(id, x, y);
             }
             response += "Successfully spawned " + args[2] + " entities of classifier " + Classifier.classifier[id] + ".";
+        }
+        else if (cmd.ToLower().StartsWith("/killall"))
+        {
+            List<Entity> temp = new List<Entity>(Main.getMain().entities);
+            foreach (Entity e in temp)
+            {
+                e.die(false);
+            }
         }
         else
         {

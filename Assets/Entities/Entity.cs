@@ -5,10 +5,14 @@ using Assets.Entities;
 
 public class Entity
 {
-    public GameObject health_green;
-    public GameObject health_red;
-    public int health = 3;
-    public int maxhealth = 3;
+    EntityID entityid;
+
+    public float speed = 1F;
+    private GameObject health_green;
+    private GameObject health_red;
+    private int health = 3;
+    private int maxhealth = 3;
+    private bool canspeak = true;
 
     public GameObject cube;
 
@@ -28,9 +32,15 @@ public class Entity
     /// Initializes a new entity
     /// </summary>
     /// <param name="classifierID">The classifier id (e.g. RED=0, BLUE=1)</param>
-    public Entity(int classifierID)
+    public Entity(int classifierID, float speed = 1F, int maxhealth = 3, bool canspeak = true)
     {
         this.classifierID = classifierID;
+        this.speed = speed;
+        this.maxhealth = maxhealth;
+        if (canspeak)
+        {
+            createTextGraphics();
+        }
     }
 
     public void createTextGraphics()
@@ -51,11 +61,14 @@ public class Entity
 
     public void saySomething(string msg)
     {
-        txt.transform.localPosition = cube.transform.localPosition;
-        txt.transform.Translate(0, 1, 0);
-        txtMesh.text = msg;
-        MeshRenderer meshrenderer = (MeshRenderer)txt.GetComponent(typeof(MeshRenderer));
-        meshrenderer.enabled = true;
+        if (canspeak)
+        {
+            txt.transform.localPosition = cube.transform.localPosition;
+            txt.transform.Translate(0, 1, 0);
+            txtMesh.text = msg;
+            MeshRenderer meshrenderer = (MeshRenderer)txt.GetComponent(typeof(MeshRenderer));
+            meshrenderer.enabled = true;
+        }
     }
 
     public void createHealthbarGraphics()
@@ -109,15 +122,71 @@ public class Entity
     public virtual void move()
     {
         // update text coordinates
-        if (said)
+        if (said && canspeak)
         {
             txt.transform.localPosition = cube.transform.localPosition;
             txt.transform.Translate(0, 1, 0);
         }
     }
 
+    public virtual void die(bool explosion)
+    {
+        dead = true;
+        Main.getMain().entities.Remove(this);
+        said = false;
+        if (canspeak)
+        {
+            txt.renderer.enabled = false;
+            GameObject.Destroy(txt);
+        }
+        GameObject.Destroy(health_green);
+        GameObject.Destroy(health_red);
+        Color cubecolor = cube.renderer.material.color;
+        Vector3 cubepos = cube.transform.localPosition;
+        GameObject.Destroy(cube, 0);
+
+        if (explosion)
+        {
+            int[,] pos = new int[16, 2] { { 0, 0 }, { 0, 1 }, { 0, 2 }, { 0, 3 }, { 1, 0 }, { 1, 1 }, { 1, 2 }, { 1, 3 }, { 2, 0 }, { 2, 1 }, { 2, 2 }, { 2, 3 }, { 3, 0 }, { 3, 1 }, { 3, 2 }, { 3, 3 } };
+
+            Vector3 cubesize = new Vector3(0.0625F * 2, 0.0625F * 2, 0.0625F * 2);
+            Vector3 explosionForcePos = new Vector3(cubepos.x * 1.01F, cubepos.y * 0.9F, cubepos.z * 1.01F);
+
+            for (int i = 0; i < 16; i++)
+            {
+                for (int j = 0; j < 4; j++)
+                {
+                    GameObject cube_ = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                    cube_.renderer.material.color = cubecolor;
+                    cube_.transform.localScale = cubesize;
+                    cube_.transform.localPosition = (new VectorHelper(cubepos).add(pos[i, 0] * 0.0625F * 2, j * 0.0625F * 2, pos[i, 1] * 0.0625F * 2));
+
+                    cube_.AddComponent<Rigidbody>();
+                    cube_.rigidbody.AddExplosionForce((Random.Range(250.0f, 600.0f)), explosionForcePos, (Random.Range(90.0f, 150.0f)));
+                    cube_.rigidbody.SetDensity(cube_.transform.localPosition.x);
+
+                    GameObject.Destroy(cube_, 2);
+                }
+            }
+        }
+
+        if (getClassifierID() == 0)
+        {
+            Main.getMain().updateWarriorCounts(Main.getMain().redwarriors - 1, Main.getMain().bluewarriors);
+        }
+        else
+        {
+            Main.getMain().updateWarriorCounts(Main.getMain().redwarriors, Main.getMain().bluewarriors - 1);
+        }
+    }
+
     public virtual void update()
     {
+        if (dead)
+        {
+            return;
+        }
+        updateHealthbar(false);
         if (!said)
         {
             if (Random.Range(0, 1500) < 1)
@@ -133,7 +202,10 @@ public class Entity
             {
                 said_c = 0;
                 said = false;
-                txt.renderer.enabled = false;
+                if (canspeak)
+                {
+                    txt.renderer.enabled = false;
+                }
             }
         }
     }
@@ -148,45 +220,7 @@ public class Entity
             if (this.health < 1)
             {
                 // dead
-                dead = true;
-                Main.getMain().entities.Remove(this);
-                said = false;
-                txt.renderer.enabled = false;
-                GameObject.Destroy(health_green);
-                GameObject.Destroy(health_red);
-                Vector3 cubepos = cube.transform.localPosition;
-                GameObject.Destroy(cube, 0);
-
-                int[,] pos = new int[16, 2] { { 0, 0 }, { 0, 1 }, { 0, 2 }, { 0, 3 }, { 1, 0 }, { 1, 1 }, { 1, 2 }, { 1, 3 }, { 2, 0 }, { 2, 1 }, { 2, 2 }, { 2, 3 }, { 3, 0 }, { 3, 1 }, { 3, 2 }, { 3, 3 } };
-
-                Vector3 cubesize = new Vector3(0.0625F * 2, 0.0625F * 2, 0.0625F * 2);
-                Vector3 explosionforce = new Vector3(cubepos.x * 1.01F, cubepos.y * 0.9F, cubepos.z * 1.01F);
-
-                for (int i = 0; i < 16; i++)
-                {
-                    for (int j = 0; j < 4; j++)
-                    {
-                        GameObject cube_ = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                        cube_.renderer.material.color = Color.cyan;
-                        cube_.transform.localScale = cubesize;
-                        cube_.transform.localPosition = (new VectorHelper(cubepos).add(pos[i, 0] * 0.0625F * 2, j * 0.0625F * 2, pos[i, 1] * 0.0625F * 2));
-
-                        cube_.AddComponent<Rigidbody>();
-                        cube_.rigidbody.AddExplosionForce((Random.Range(300.0f, 700.0f)), explosionforce, (Random.Range(100.0f, 200.0f)));
-                        cube_.rigidbody.SetDensity(cube_.transform.localPosition.x);
-
-                        GameObject.Destroy(cube_, 2);
-                    }
-                }
-
-                if (getClassifierID() == 0)
-                {
-                    Main.getMain().updateWarriorCounts(Main.getMain().redwarriors - 1, Main.getMain().bluewarriors);
-                }
-                else
-                {
-                    Main.getMain().updateWarriorCounts(Main.getMain().redwarriors, Main.getMain().bluewarriors - 1);
-                }
+                die(true);
                 return;
             }
         }
@@ -216,5 +250,25 @@ public class Entity
     public void setMove(bool m)
     {
         this.move_ = m;
+    }
+
+    public EntityID getEntityID()
+    {
+        return entityid;
+    }
+
+    public void setEntityID(EntityID id)
+    {
+        entityid = id;
+    }
+
+    public void jump()
+    {
+        cube.rigidbody.AddForce(0, 100, 0);
+    }
+
+    public void jump(int force)
+    {
+        cube.rigidbody.AddForce(0, force, 0);
     }
 }

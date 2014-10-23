@@ -3,10 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using Assets.GamePlay;
 using Assets.Blocks;
+using Assets.GamePlay.Util;
 
 public class Main : MonoBehaviour
 {
-
+    public System.Random random;
     public static List<string> words = new List<string>(new string[] { "Hi", "What's up fella!", "Dudee", "Dudeeee", "I'm bored.", "?", "!", "Mhm", "Hmmm", "I hate you", "I love you", "Nope Nope Nope", "Gawd", "Ugh", "yaaaaay", "mkay", "sup", "rude", "Not cool man", "so", "Fu" });
 
     CameraHandler camhandler;
@@ -28,6 +29,7 @@ public class Main : MonoBehaviour
     {
         main = this;
         Materials.init();
+        random = new System.Random();
 
         camhandler = new CameraHandler(transform.gameObject);
         mouseclickhandler = new MouseClickSceneHandler();
@@ -37,16 +39,12 @@ public class Main : MonoBehaviour
 
         for (int i = 0; i < 30; i++)
         {
-            EntityWarrior ew = new EntityWarrior(0, new VectorHelper(Main.getMain().spawnLocation).add(Random.Range(20, 30), 0, Random.Range(20, 30)));
-            entities.Add(ew);
-            redwarriors++;
+            EntityUtil.spawnEntity(0, random.Next(20, 30), random.Next(20, 30));
         }
 
         for (int i = 0; i < 30; i++)
         {
-            EntityWarrior ew = new EntityWarrior(1, new VectorHelper(Main.getMain().spawnLocation).add(Random.Range(10, 20), 0, Random.Range(10, 20)));
-            entities.Add(ew);
-            bluewarriors++;
+            EntityUtil.spawnEntity(1, random.Next(10, 20), random.Next(10, 20));
         }
 
         BlockSpawner spawner = new BlockSpawner(10, 0, 14, "BLUE");
@@ -85,7 +83,9 @@ public class Main : MonoBehaviour
             ew.update();
         }
 
-        mouseclickhandler.update(entities);
+        // Update Mouse events
+        mouseclickhandler.update();
+
         foreach (Block b in blocks)
         {
             b.update();

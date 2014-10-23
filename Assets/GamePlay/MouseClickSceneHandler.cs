@@ -18,8 +18,9 @@ namespace Assets.GamePlay
 
         }
 
-        public void update(List<Entity> entities)
+        public void update()
         {
+            List<Entity> entities = new List<Entity>(Main.getMain().entities);
             // check for mouse input
             ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray, out hit))

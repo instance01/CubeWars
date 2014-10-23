@@ -7,11 +7,8 @@ using Assets.GamePlay;
 
 public class EntityWarrior : Entity
 {
-
     BoxCollider cubeCollider;
-    public static float speed = 0.9F;
     string enemyClassifier = "";
-    EntityID entityid;
 
     bool shootcooldown = false;
     int shootcooldown_c = 0;
@@ -19,10 +16,10 @@ public class EntityWarrior : Entity
     Entity target;
 
 
-    public EntityWarrior(int c, Vector3 spawn) : base(c)
+    public EntityWarrior(int c, Vector3 spawn)
+        : base(c, 0.9F)
     {
         createGraphics(spawn);
-        createTextGraphics();
         if (getClassifierID() == 0)
         {
             enemyClassifier = "BLUE";
@@ -35,7 +32,6 @@ public class EntityWarrior : Entity
 
     public void createGraphics(Vector3 spawn)
     {
-
         // creates the cube
         cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
         cube.name = "EntityWarrior" + getClassifierName();
@@ -55,10 +51,8 @@ public class EntityWarrior : Entity
         cube.AddComponent<Rigidbody>();
         cubeCollider = cube.AddComponent<BoxCollider>();
         cubeCollider.size = new Vector3(1.25F, 1.25F, 1.25F);
-        entityid = cube.AddComponent<EntityID>();
+        base.setEntityID(cube.AddComponent<EntityID>());
         cube.AddComponent<EntityCollider>().init(this);
-        //Debug.Log (entityid.getID());
-
 
         base.createHealthbarGraphics();
 
@@ -183,11 +177,6 @@ public class EntityWarrior : Entity
     public override void update()
     {
         base.update();
-        if (dead)
-        {
-            return;
-        }
-        updateHealthbar(false);
         move();
     }
 
@@ -217,18 +206,4 @@ public class EntityWarrior : Entity
         }
     }
 
-    public EntityID getEntityID()
-    {
-        return entityid;
-    }
-
-    public void jump()
-    {
-        cube.rigidbody.AddForce(0, 100, 0);
-    }
-
-    public void jump(int force)
-    {
-        cube.rigidbody.AddForce(0, force, 0);
-    }
 }
