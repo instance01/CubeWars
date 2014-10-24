@@ -3,6 +3,7 @@ using System.Collections;
 using Assets.Entities;
 using Assets.GamePlay.Util;
 using System.Collections.Generic;
+using Assets.GamePlay;
 
 public class IngameGUI : MonoBehaviour
 {
@@ -23,10 +24,21 @@ public class IngameGUI : MonoBehaviour
     private float timeleft;
     string fps_string = "";
 
+    Texture gui_red_entity;
+    Texture gui_blue_entity;
+    GameObject current_entity;
+    int current_entity_id = 0;
+
+    Ray ray;
+    RaycastHit hit;
+
     void Start()
     {
         timeleft = updateInterval;
         random = new System.Random();
+
+        gui_red_entity = Resources.Load("gui_red_entity", typeof(Texture)) as Texture;
+        gui_blue_entity = Resources.Load("gui_blue_entity", typeof(Texture)) as Texture;
     }
 
     void Update()
@@ -42,6 +54,30 @@ public class IngameGUI : MonoBehaviour
             accum = 0.0F;
             frames = 0;
         }
+        if (current_entity != null)
+        {
+            ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            current_entity.transform.position = ray.GetPoint(10);
+            current_entity.transform.Translate(-1, 0, 0);
+            if (Physics.Raycast(ray, out hit))
+            {
+                if (hit.collider.name == "Terrain")
+                {
+                    if (Input.GetMouseButtonDown(0))
+                    {
+                        EntityUtil.spawnEntity(current_entity_id, hit.point.x, hit.point.y - 0.5F, hit.point.z);
+                    }
+                }
+                else
+                {
+                    if (Input.GetMouseButtonDown(0))
+                    {
+                        Destroy(current_entity);
+                        current_entity = null;
+                    }
+                }
+            }
+        }
     }
 
     void OnGUI()
@@ -55,7 +91,10 @@ public class IngameGUI : MonoBehaviour
         GUI.Label(new Rect(Screen.width - 150, 40, 150, 20), UnityEngine.Object.FindObjectsOfType<GameObject>().Length.ToString() + " GameObjects");
         GUI.Label(new Rect(Screen.width - 150, 60, 150, 20), Main.getMain().entities.Count.ToString() + " Entities");
 
-        size = GUI.skin.GetStyle("Label").CalcHeight(new GUIContent("test"), 20F);
+        if (size < 1)
+        {
+            size = GUI.skin.GetStyle("Label").CalcHeight(new GUIContent("test"), 20F);
+        }
         GUI.Label(new Rect(10, Screen.height - 40 - currentheight, 600, currentheight), response);
         Event e = Event.current;
         if (e.keyCode == KeyCode.Return)
@@ -76,6 +115,31 @@ public class IngameGUI : MonoBehaviour
         else if (ret == false)
         {
             cmd = GUI.TextField(new Rect(10, Screen.height - 40, 250, 30), cmd, 40);
+            if (GUI.Button(new Rect(Screen.width - 50, 100, 40, 40), gui_red_entity))
+            {
+                if (current_entity == null)
+                {
+                    spawnSelectionTool(0, Materials.redMat);
+                }
+                else if (current_entity != null && current_entity_id != 0)
+                {
+                    current_entity.renderer.material = Materials.redMat;
+                    current_entity_id = 0;
+                }
+                
+            }
+            if (GUI.Button(new Rect(Screen.width - 50, 140, 40, 40), gui_blue_entity))
+            {
+                if (current_entity == null)
+                {
+                    spawnSelectionTool(1, Materials.blueMat);
+                }
+                else if (current_entity != null && current_entity_id != 1)
+                {
+                    current_entity.renderer.material = Materials.blueMat;
+                    current_entity_id = 1;
+                }
+            }
         }
 
         if (open)
@@ -85,6 +149,16 @@ public class IngameGUI : MonoBehaviour
                 //
             }
         }
+    }
+
+    public void spawnSelectionTool(int id, Material m)
+    {
+        current_entity = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        current_entity.transform.position = ray.GetPoint(10);
+        current_entity.transform.localScale = new Vector3(0.5F, 0.5F, 0.5F);
+        current_entity.renderer.material = m;
+        current_entity_id = id;
     }
 
     public static void setOpen(bool o)

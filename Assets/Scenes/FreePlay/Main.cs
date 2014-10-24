@@ -93,7 +93,14 @@ public class Main : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            Application.LoadLevel(0);
+            if (IngameGUI.isOpen())
+            {
+                IngameGUI.setOpen(false);
+            }
+            else
+            {
+                Application.LoadLevel(0);
+            }
         }
         else if (Input.GetKeyDown(KeyCode.O))
         {
