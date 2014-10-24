@@ -39,16 +39,16 @@ public class Main : MonoBehaviour
 
         for (int i = 0; i < 30; i++)
         {
-            EntityUtil.spawnEntity(0, random.Next(20, 30), random.Next(20, 30));
+            EntityUtil.spawnEntityAtSpawn(0, random.Next(20, 30), random.Next(20, 30));
         }
 
         for (int i = 0; i < 30; i++)
         {
-            EntityUtil.spawnEntity(1, random.Next(10, 20), random.Next(10, 20));
+            EntityUtil.spawnEntityAtSpawn(1, random.Next(10, 20), random.Next(10, 20));
         }
 
-        BlockSpawner spawner = new BlockSpawner(10, 0, 14, "BLUE");
-        BlockSpawner spawner2 = new BlockSpawner(28, 0, 24, "RED");
+        BlockSpawner spawner = new BlockSpawner(10, 0, 14, 1);
+        BlockSpawner spawner2 = new BlockSpawner(28, 0, 24, 0);
         blocks.Add(spawner);
         blocks.Add(spawner2);
     }

@@ -13,11 +13,7 @@ public class EntityWarrior : Entity
     bool shootcooldown = false;
     int shootcooldown_c = 0;
 
-    Entity target;
-
-
-    public EntityWarrior(int c, Vector3 spawn)
-        : base(c, 0.9F)
+    public EntityWarrior(int c, Vector3 spawn) : base(c, 0.9F)
     {
         createGraphics(spawn);
         if (getClassifierID() == 0)
@@ -56,39 +52,6 @@ public class EntityWarrior : Entity
 
         base.createHealthbarGraphics();
 
-    }
-
-    public void attack(EntityWarrior ew)
-    {
-        if (ew.getCube() == null)
-        {
-            target = null;
-            return;
-        }
-        GameObject attackcube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-        attackcube.name = getClassifierName() + "_BULLET";
-        attackcube.transform.localScale = new Vector3(0.1F, 0.1F, 0.1F);
-        if (getClassifierID() == 0)
-        {
-            cube.renderer.material = Materials.redMat;
-        }
-        else if (getClassifierID() == 1)
-        {
-            cube.renderer.material = Materials.blueMat;
-        }
-        attackcube.transform.localRotation = cube.transform.localRotation;
-        attackcube.transform.localPosition = new VectorHelper(cube.transform.localPosition).add(0, 1, 0);
-
-        Rigidbody rigid = (Rigidbody)attackcube.AddComponent(typeof(Rigidbody));
-        rigid.velocity = new VectorHelper((ew.getCube().transform.position - attackcube.transform.position).normalized * speed * 15).add(0F, 2.5F, 0F);
-        //rigid.velocity.Set (rigid.velocity.x, 25, rigid.velocity.z);
-
-        GameObject.Destroy(attackcube, 4);
-
-        if (Vector3.Distance(getCube().transform.position, ew.getCube().transform.position) > 15)
-        {
-            this.target = null;
-        }
     }
 
     public void findTarget()

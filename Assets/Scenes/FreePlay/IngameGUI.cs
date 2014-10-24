@@ -122,7 +122,11 @@ public class IngameGUI : MonoBehaviour
     {
         if (cmd == "/help")
         {
-            response += "Here's a list of current available commands:";
+            response += "Here's a list of currently available commands:";
+            response += "\n/spawnentity";
+            response += "\n/killall";
+
+            currentheight += (int)size * 2;
         }
         else if (cmd.ToLower().StartsWith("/spawnentity"))
         {
@@ -140,15 +144,15 @@ public class IngameGUI : MonoBehaviour
             }
             int.TryParse(args[1], out id);
             int x = random.Next(20, 30);
-            int y = random.Next(20, 30);
+            int z = random.Next(20, 30);
             if (id == 1)
             {
                 x = random.Next(10, 20);
-                y = random.Next(10, 20);
+                z = random.Next(10, 20);
             }
             for (int i = 0; i < count; i++)
             {
-                EntityUtil.spawnEntity(id, x, y);
+                EntityUtil.spawnEntityAtSpawn(id, x, z);
             }
             response += "Successfully spawned " + args[2] + " entities of classifier " + Classifier.classifier[id] + ".";
         }
@@ -159,10 +163,11 @@ public class IngameGUI : MonoBehaviour
             {
                 e.die(false);
             }
+            response += "Successfully killed all entities.";
         }
         else
         {
-            response = "Command not found.";
+            response += "Command not found.";
         }
     }
 }

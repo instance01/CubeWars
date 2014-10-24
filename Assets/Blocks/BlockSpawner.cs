@@ -1,6 +1,5 @@
 ﻿using Assets.GamePlay;
 using Assets.GamePlay.Util;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,41 +10,42 @@ namespace Assets.Blocks
     class BlockSpawner : Block
     {
         public float x, y, z;
-        public string clazz;
+        public int id;
 
         private GameObject midblock;
 
-        public BlockSpawner(float x, float y, float z, string clazz) : base(createFullBlock(x, y, z, clazz), "BlockSpawner" + clazz)
+        public BlockSpawner(float x, float y, float z, int id)
+            : base(createFullBlock(x, y, z, id), "BlockSpawner" + id)
         {
             this.x = x;
             this.y = y;
             this.z = z;
-            this.clazz = clazz;
+            this.id = id;
             this.midblock = this.rawcubes[this.rawcubes.Count - 1];
         }
 
-        private static List<GameObject> createFullBlock(float x, float y, float z, string clazz)
+        private static List<GameObject> createFullBlock(float x, float y, float z, int id)
         {
             y += 0.5F;
             List<GameObject> cubes = new List<GameObject>();
 
-            cubes.Add(createBlock(x, y, z, clazz, +0F, +0.25F, +0.25F, 0.05F, 0.05F, 0.5F, Materials.blackMat));
-            cubes.Add(createBlock(x, y, z, clazz, +0F, +0F, +0F, 0.05F, 0.5F, 0.05F, Materials.blackMat));
-            cubes.Add(createBlock(x, y, z, clazz, +0.25F, +0.25F, +0F, 0.5F, 0.05F, 0.05F, Materials.blackMat));
+            cubes.Add(createBlock(x, y, z, id, +0F, +0.25F, +0.25F, 0.05F, 0.05F, 0.5F, Materials.blackMat));
+            cubes.Add(createBlock(x, y, z, id, +0F, +0F, +0F, 0.05F, 0.5F, 0.05F, Materials.blackMat));
+            cubes.Add(createBlock(x, y, z, id, +0.25F, +0.25F, +0F, 0.5F, 0.05F, 0.05F, Materials.blackMat));
 
-            cubes.Add(createBlock(x, y, z, clazz, +0.5F, +0.25F, +0.25F, 0.05F, 0.05F, 0.5F, Materials.blackMat));
-            cubes.Add(createBlock(x, y, z, clazz, +0.5F, +0F, +0.5F, 0.05F, 0.5F, 0.05F, Materials.blackMat));
-            cubes.Add(createBlock(x, y, z, clazz, +0.25F, +0.25F, +0.5F, 0.5F, 0.05F, 0.05F, Materials.blackMat));
+            cubes.Add(createBlock(x, y, z, id, +0.5F, +0.25F, +0.25F, 0.05F, 0.05F, 0.5F, Materials.blackMat));
+            cubes.Add(createBlock(x, y, z, id, +0.5F, +0F, +0.5F, 0.05F, 0.5F, 0.05F, Materials.blackMat));
+            cubes.Add(createBlock(x, y, z, id, +0.25F, +0.25F, +0.5F, 0.5F, 0.05F, 0.05F, Materials.blackMat));
 
-            cubes.Add(createBlock(x, y, z, clazz, +0F, -0.25F, +0.25F, 0.05F, 0.05F, 0.5F, Materials.blackMat));
-            cubes.Add(createBlock(x, y, z, clazz, +0.5F, +0F, +0F, 0.05F, 0.5F, 0.05F, Materials.blackMat));
-            cubes.Add(createBlock(x, y, z, clazz, +0.25F, -0.25F, +0F, 0.5F, 0.05F, 0.05F, Materials.blackMat));
+            cubes.Add(createBlock(x, y, z, id, +0F, -0.25F, +0.25F, 0.05F, 0.05F, 0.5F, Materials.blackMat));
+            cubes.Add(createBlock(x, y, z, id, +0.5F, +0F, +0F, 0.05F, 0.5F, 0.05F, Materials.blackMat));
+            cubes.Add(createBlock(x, y, z, id, +0.25F, -0.25F, +0F, 0.5F, 0.05F, 0.05F, Materials.blackMat));
 
-            cubes.Add(createBlock(x, y, z, clazz, +0.5F, -0.25F, +0.25F, 0.05F, 0.05F, 0.5F, Materials.blackMat));
-            cubes.Add(createBlock(x, y, z, clazz, +0F, +0F, +0.5F, 0.05F, 0.5F, 0.05F, Materials.blackMat));
-            cubes.Add(createBlock(x, y, z, clazz, +0.25F, -0.25F, +0.5F, 0.5F, 0.05F, 0.05F, Materials.blackMat));
+            cubes.Add(createBlock(x, y, z, id, +0.5F, -0.25F, +0.25F, 0.05F, 0.05F, 0.5F, Materials.blackMat));
+            cubes.Add(createBlock(x, y, z, id, +0F, +0F, +0.5F, 0.05F, 0.5F, 0.05F, Materials.blackMat));
+            cubes.Add(createBlock(x, y, z, id, +0.25F, -0.25F, +0.5F, 0.5F, 0.05F, 0.05F, Materials.blackMat));
 
-            GameObject mid = createBlock(x, y, z, clazz, +0.25F, -0F, +0.25F, 0.25F, 0.25F, 0.25F);
+            GameObject mid = createBlock(x, y, z, id, +0.25F, -0F, +0.25F, 0.25F, 0.25F, 0.25F);
             //midblock = mid;
 
             cubes.Add(mid);
@@ -53,43 +53,38 @@ namespace Assets.Blocks
             return cubes;
         }
 
-        private static GameObject createBlock(float x, float y, float z, string clazz, float addX, float addY, float addZ, float widthX, float widthY, float widthZ, Material m)
+        private static GameObject createBlock(float x, float y, float z, int id, float addX, float addY, float addZ, float widthX, float widthY, float widthZ, Material m)
         {
-            return BlockUtil.createBlock(x, y, z, "BlockSpawner", clazz, addX, addY, addZ, widthX, widthY, widthZ, m);
+            return BlockUtil.createBlock(x, y, z, "BlockSpawner", id, addX, addY, addZ, widthX, widthY, widthZ, m);
         }
 
-        private static GameObject createBlock(float x, float y, float z, string clazz, float addX, float addY, float addZ, float widthX, float widthY, float widthZ)
+        private static GameObject createBlock(float x, float y, float z, int id, float addX, float addY, float addZ, float widthX, float widthY, float widthZ)
         {
-            if (clazz == "BLUE")
+            if (id == 1)
             {
-                return createBlock(x, y, z, clazz, addX, addY, addZ, widthX, widthY, widthZ, Materials.blueMat);
+                return createBlock(x, y, z, id, addX, addY, addZ, widthX, widthY, widthZ, Materials.blueMat);
             }
-            else if (clazz == "RED")
+            else if (id == 0)
             {
-                return createBlock(x, y, z, clazz, addX, addY, addZ, widthX, widthY, widthZ, Materials.redMat);
+                return createBlock(x, y, z, id, addX, addY, addZ, widthX, widthY, widthZ, Materials.redMat);
             }
 
-            return createBlock(x, y, z, clazz, addX, addY, addZ, widthX, widthY, widthZ, Materials.blueMat);
+            return createBlock(x, y, z, id, addX, addY, addZ, widthX, widthY, widthZ, Materials.blueMat);
         }
 
         public override void update()
         {
-            midblock.transform.Rotate(new Vector3(0, 1, 0));
-            if (UnityEngine.Random.Range(0, 100) > 98)
+            midblock.transform.Rotate(0F, 1F, 0F);
+            if (Random.Range(0, 100) > 98)
             {
-                if (clazz == "RED")
+                if (id == 0)
                 {
-                    EntityWarrior ew = new EntityWarrior(0, new VectorHelper(new Vector3(x, y, z)).add(UnityEngine.Random.Range(1, 5), 1, UnityEngine.Random.Range(1, 5)));
-                    Main.getMain().entities.Add(ew);
-                    Main.getMain().addWarriorCount(true, false);
+                    EntityUtil.spawnEntity(0, x + Random.Range(1, 5), y + 0.5F, z + Random.Range(1, 5));
                 }
-                else if (clazz == "BLUE")
+                else if (id == 1)
                 {
-                    EntityWarrior ew = new EntityWarrior(1, new VectorHelper(new Vector3(x, y, z)).add(UnityEngine.Random.Range(1, 5), 1, UnityEngine.Random.Range(1, 5)));
-                    Main.getMain().entities.Add(ew);
-                    Main.getMain().addWarriorCount(false, true);
+                    EntityUtil.spawnEntity(1, x + Random.Range(1, 5), y + 0.5F, z + Random.Range(1, 5));
                 }
-                
             }
         }
     }

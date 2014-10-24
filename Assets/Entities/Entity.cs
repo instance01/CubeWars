@@ -28,6 +28,10 @@ public class Entity
 
     int classifierID = 0;
 
+    GameObject smoke;
+
+    public Entity target;
+
     /// <summary>
     /// Initializes a new entity
     /// </summary>
@@ -41,6 +45,7 @@ public class Entity
         {
             createTextGraphics();
         }
+        smoke = GameObject.Find("Smoke");
     }
 
     public void createTextGraphics()
@@ -162,7 +167,7 @@ public class Entity
                     cube_.transform.localPosition = (new VectorHelper(cubepos).add(pos[i, 0] * 0.0625F * 2, j * 0.0625F * 2, pos[i, 1] * 0.0625F * 2));
 
                     cube_.AddComponent<Rigidbody>();
-                    cube_.rigidbody.AddExplosionForce((Random.Range(250.0f, 600.0f)), explosionForcePos, (Random.Range(90.0f, 150.0f)));
+                    cube_.rigidbody.AddExplosionForce((Random.Range(150.0f, 350.0f)), explosionForcePos, (Random.Range(50.0f, 100.0f)));
                     cube_.rigidbody.SetDensity(cube_.transform.localPosition.x);
 
                     GameObject.Destroy(cube_, 2);
@@ -223,6 +228,43 @@ public class Entity
                 die(true);
                 return;
             }
+        }
+    }
+
+    public void attack(EntityWarrior ew)
+    {
+        if (ew.getCube() == null)
+        {
+            target = null;
+            return;
+        }
+        GameObject attackcube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        attackcube.name = getClassifierName() + "_BULLET";
+        attackcube.transform.localScale = new Vector3(0.1F, 0.1F, 0.1F);
+        if (getClassifierID() == 0)
+        {
+            cube.renderer.material = Materials.redMat;
+        }
+        else if (getClassifierID() == 1)
+        {
+            cube.renderer.material = Materials.blueMat;
+        }
+        attackcube.transform.localRotation = cube.transform.localRotation;
+        attackcube.transform.localPosition = new VectorHelper(cube.transform.localPosition).add(0, 1, 0);
+
+        GameObject smoketrail = GameObject.Instantiate(smoke, attackcube.transform.localPosition, Quaternion.Inverse(attackcube.transform.localRotation)) as GameObject;
+        smoketrail.transform.localScale = new Vector3(0.01F, 0.01F, 0.01F);
+        smoketrail.transform.parent = attackcube.transform;
+
+        Rigidbody rigid = (Rigidbody)attackcube.AddComponent(typeof(Rigidbody));
+        rigid.velocity = new VectorHelper((ew.getCube().transform.position - attackcube.transform.position).normalized * speed * 15).add(0F, 2.5F, 0F);
+        //rigid.velocity.Set (rigid.velocity.x, 25, rigid.velocity.z);
+
+        GameObject.Destroy(attackcube, 4);
+
+        if (Vector3.Distance(getCube().transform.position, ew.getCube().transform.position) > 15)
+        {
+            this.target = null;
         }
     }
 

@@ -1,27 +1,31 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class EntityCollider : MonoBehaviour {
+public class EntityCollider : MonoBehaviour
+{
 
-	EntityWarrior ew;
+    Entity e;
 
-	public void init (Entity e){
-		if (e is EntityWarrior) {
-			ew = (EntityWarrior)e;
-		}
-	}
+    public void init(Entity e)
+    {
+        this.e = e;
+    }
 
-	void Start () {
-	
-	}
+    void Start()
+    {
 
-	void Update () {
-	
-	}
+    }
 
-	public void OnCollisionEnter(Collision c){
-		if (ew != null) {
-			ew.checkCollide(c);
-		}
-	}
+    void Update()
+    {
+
+    }
+
+    public void OnCollisionEnter(Collision c)
+    {
+        if (e != null)
+        {
+            e.checkCollide(c);
+        }
+    }
 }
