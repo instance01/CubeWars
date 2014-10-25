@@ -37,15 +37,21 @@ public class Main : MonoBehaviour
         cursorcone = GameObject.Find("cone");
         cursorcone.transform.renderer.enabled = false;
 
-        for (int i = 0; i < 30; i++)
+        for (int i = 0; i < 10; i++)
         {
             EntityUtil.spawnEntityAtSpawn(0, random.Next(20, 30), random.Next(20, 30));
         }
 
-        for (int i = 0; i < 30; i++)
+        for (int i = 0; i < 10; i++)
         {
             EntityUtil.spawnEntityAtSpawn(1, random.Next(10, 20), random.Next(10, 20));
         }
+
+        EntityTank t = new EntityTank(0, new VectorHelper(Main.getMain().spawnLocation).add(20, 0, 20));
+        Main.getMain().entities.Add(t);
+
+        EntityTank t_ = new EntityTank(1, new VectorHelper(Main.getMain().spawnLocation).add(18, 0, 18));
+        Main.getMain().entities.Add(t_);
 
         BlockSpawner spawner = new BlockSpawner(10, 0, 14, 1);
         BlockSpawner spawner2 = new BlockSpawner(28, 0, 24, 0);

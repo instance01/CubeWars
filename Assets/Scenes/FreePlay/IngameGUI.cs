@@ -236,7 +236,6 @@ public class IngameGUI : MonoBehaviour
                 {
                     EntityUtil.spawnEntityAtSpawn(id, random.Next(10, 20), random.Next(10, 20));
                 }
-                
             }
             response += "Successfully spawned " + args[2] + " entities of classifier " + Classifier.classifier[id] + ".";
         }

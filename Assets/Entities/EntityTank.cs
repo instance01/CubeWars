@@ -8,7 +8,7 @@ using Assets.Entities;
 
 // A warrior moves around very aggressively and fast and is a short ranged entity
 
-public class EntityWarrior : Entity
+public class EntityTank : Entity
 {
     BoxCollider cubeCollider;
     int enemyClassifier = 0;
@@ -16,8 +16,8 @@ public class EntityWarrior : Entity
     bool shootcooldown = false;
     int shootcooldown_c = 0;
 
-    public EntityWarrior(int c, Vector3 spawn)
-        : base(c, 1.1F)
+    public EntityTank(int c, Vector3 spawn)
+        : base(c, 0.6F, 40, 80)
     {
         createGraphics(spawn);
         if (getClassifierID() == 0)
@@ -28,31 +28,56 @@ public class EntityWarrior : Entity
         {
             enemyClassifier = 0;
         }
+
+        base.bullet_fly_power = 1.5F;
     }
 
     public void createGraphics(Vector3 spawn)
     {
-        // creates the cube
-        cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-        cube.name = "EntityWarrior" + getClassifierName();
-        //cube.tag = "EntityWarrior" + getClassifierName();
-        cube.transform.position = spawn;
-        cube.transform.localScale = new Vector3(0.5F, 0.5F, 0.5F);
+        Material m = Materials.redMat;
         if (getClassifierID() == 0)
         {
-            cube.renderer.material = Materials.redMat;
+            m = Materials.redMat;
         }
         else if (getClassifierID() == 1)
         {
-            cube.renderer.material = Materials.blueMat;
+            m = Materials.blueMat;
+        }
+        // creates the cube
+        cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        cube.name = "EntityTank" + getClassifierName();
+        //cube.tag = "EntityTank" + getClassifierName();
+        cube.transform.position = spawn;
+        cube.transform.localScale = new Vector3(1F, 0.4F, 2F);
+        if (getClassifierID() == 0)
+        {
+            cube.renderer.material = m;
+        }
+        else if (getClassifierID() == 1)
+        {
+            cube.renderer.material = m;
         }
 
         // adds components to cube
         cube.AddComponent<Rigidbody>();
         cubeCollider = cube.AddComponent<BoxCollider>();
-        cubeCollider.size = new Vector3(1.25F, 1.25F, 1.25F);
+        cubeCollider.size = new Vector3(1.5F, 1.25F, 1.25F);
         base.setEntityID(cube.AddComponent<EntityID>());
         cube.AddComponent<EntityCollider>().init(this);
+
+        GameObject cube_ = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        cube_.transform.position = new VectorHelper(spawn).add(0F, 0.25F, 0F);
+        cube_.transform.localScale = new Vector3(0.6F, 0.2F, 0.8F);
+        cube_.transform.parent = cube.transform;
+        cube_.renderer.material = m;
+
+        GameObject cube__ = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        cube__.transform.position = new VectorHelper(spawn).add(0F, 0.45F, 0.5F);
+        cube__.transform.localScale = new Vector3(0.2F, 0.2F, 1.5F);
+        cube__.transform.parent = cube.transform;
+        cube__.renderer.material = m;
+
+        cube.rigidbody.mass = 10F;
 
         base.createHealthbarGraphics();
 
@@ -72,15 +97,8 @@ public class EntityWarrior : Entity
         {
             if (move_)
             {
-                cube.transform.Rotate(0, Random.Range(-5, 5), 0); // they move to the left more often because we never reach 5 here (just -5 to 4).
+                cube.transform.Rotate(0, Random.Range(-1, 2), 0);
                 cube.transform.Translate(Vector3.forward * Time.deltaTime * speed);
-
-                if (Random.Range(0, 1000) < 1)
-                {
-                    // will jump randomly
-                    // TODO jump when obstacle in front of entity
-                    jump(150);
-                }
             }
 
             // try to find a new target
@@ -101,7 +119,7 @@ public class EntityWarrior : Entity
             if (target is Entity)
             {
                 shootcooldown = true;
-                attack(target);
+                attack((Entity)target);
             }
         }
     }
@@ -116,6 +134,5 @@ public class EntityWarrior : Entity
         base.update();
         move();
     }
-
 
 }

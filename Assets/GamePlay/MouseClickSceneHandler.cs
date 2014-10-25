@@ -33,13 +33,13 @@ namespace Assets.GamePlay
                         EntityID e = (EntityID)hit.collider.GetComponent(typeof(EntityID));
                         int tempid = e.getID();
 
-                        foreach (EntityWarrior ew in entities)
+                        foreach (Entity e_ in entities)
                         {
-                            if (ew.getEntityID().getID() == tempid)
+                            if (e_.getEntityID().getID() == tempid)
                             {
                                 // found
-                                ew.jump();
-                                selected = ew;
+                                e_.jump();
+                                selected = e_;
                             }
                         }
                     }
@@ -52,22 +52,22 @@ namespace Assets.GamePlay
                         EntityID e = (EntityID)hit.collider.GetComponent(typeof(EntityID));
                         int tempid = e.getID();
 
-                        foreach (EntityWarrior ew in entities)
+                        foreach (Entity e_ in entities)
                         {
-                            if (ew.getEntityID().getID() == tempid)
+                            if (e_.getEntityID().getID() == tempid)
                             {
                                 // found
-                                ew.jump();
-                                selected = ew;
+                                e_.jump();
+                                selected = e_;
                             }
                         }
                     }
                 }
                 else
                 {
-                    foreach (EntityWarrior ew in entities)
+                    foreach (Entity e in entities)
                     {
-                        ew.updateMaterial(false);
+                        e.updateMaterial(false);
                     }
 
                     if (selected != null)

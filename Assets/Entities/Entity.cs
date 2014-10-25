@@ -2,6 +2,7 @@
 using System.Collections;
 using Assets.GamePlay;
 using Assets.Entities;
+using System.Collections.Generic;
 
 public class Entity
 {
@@ -13,6 +14,8 @@ public class Entity
     private int health = 3;
     private int maxhealth = 3;
     private bool canspeak = true;
+    private int shootcooldown_max = 100;
+    public float bullet_fly_power = 1F;
 
     public GameObject cube;
 
@@ -36,11 +39,13 @@ public class Entity
     /// Initializes a new entity
     /// </summary>
     /// <param name="classifierID">The classifier id (e.g. RED=0, BLUE=1)</param>
-    public Entity(int classifierID, float speed = 1F, int maxhealth = 3, bool canspeak = true)
+    public Entity(int classifierID, float speed = 1F, int maxhealth = 3, int shootcooldown_max = 100, bool canspeak = true)
     {
         this.classifierID = classifierID;
         this.speed = speed;
         this.maxhealth = maxhealth;
+        this.health = maxhealth;
+        this.shootcooldown_max = shootcooldown_max;
         if (canspeak)
         {
             createTextGraphics();
@@ -235,9 +240,9 @@ public class Entity
         }
     }
 
-    public void attack(EntityWarrior ew)
+    public void attack(Entity e)
     {
-        if (ew.getCube() == null)
+        if (e.getCube() == null)
         {
             target = null;
             return;
@@ -261,14 +266,145 @@ public class Entity
         smoketrail.transform.parent = attackcube.transform;
 
         Rigidbody rigid = (Rigidbody)attackcube.AddComponent(typeof(Rigidbody));
-        rigid.velocity = new VectorHelper((ew.getCube().transform.position - attackcube.transform.position).normalized * speed * 15).add(0F, 2.5F, 0F);
+        rigid.velocity = new VectorHelper((e.getCube().transform.position - attackcube.transform.position).normalized * bullet_fly_power * 15).add(0F, 2.5F, 0F);
         //rigid.velocity.Set (rigid.velocity.x, 25, rigid.velocity.z);
 
         GameObject.Destroy(attackcube, 4);
 
-        if (Vector3.Distance(getCube().transform.position, ew.getCube().transform.position) > 15)
+        getCube().transform.LookAt(target.getCube().transform);
+
+        if (Vector3.Distance(getCube().transform.position, e.getCube().transform.position) > 15)
         {
             this.target = null;
+        }
+    }
+
+    public List<GameObject> targets = new List<GameObject>();
+    private void SortTargetsByDistance()
+    {
+        targets.Sort(delegate(GameObject t1, GameObject t2)
+        {
+            if (t1 != null && t2 != null)
+            {
+                return Vector3.Distance(t1.transform.position, getCube().transform.position).CompareTo(Vector3.Distance(t2.transform.position, getCube().transform.position));
+            }
+            return 100;
+        });
+    }
+    public void tryFindAttackTarget()
+    {
+        if (targets.Count > 3)
+        {
+            for (int i = 0; i < 4; i++)
+            {
+                if (targets[i] != null)
+                {
+                    if (Vector3.Distance(getCube().transform.position, targets[i].transform.position) < 10)
+                    {
+                        EntityID e = (EntityID)targets[i].GetComponent(typeof(EntityID));
+                        int tempid = e.getID();
+
+                        foreach (Entity e_ in Main.getMain().entities)
+                        {
+                            if (e_.getEntityID().getID() == tempid)
+                            {
+                                target = e_;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        else
+        {
+            if (Main.getMain().entities.Count > 8)
+            {
+                calculated = false;
+            }
+        }
+        List<GameObject> temp = new List<GameObject>(targets);
+        foreach (GameObject go in temp)
+        {
+            if (go == null)
+            {
+                targets.Remove(go);
+            }
+        }
+    }
+    bool calculated = false;
+    public virtual void findTarget(int enemyId)//string fullEnemyClassifier)
+    {
+        if (!calculated)
+        {
+            targets.Clear();
+            calculated = true;
+            //GameObject[] go = GameObject.FindGameObjectsWithTag(fullEnemyClassifier);
+            foreach (Entity e in Main.getMain().entities)
+            {
+                if (e.getClassifierID() == enemyId)
+                {
+                    targets.Add(e.getCube());
+                }
+            }
+            SortTargetsByDistance();
+            tryFindAttackTarget();
+        }
+        else
+        {
+            tryFindAttackTarget();
+        }
+
+        /*var currentPos = getCube().transform.position;
+
+        GameObject[] gos = GameObject.FindGameObjectsWithTag("EntityWarrior" + enemyClassifier);
+        if (gos.Length > 0)
+        {
+            GameObject closestGameObject = gos
+                .Select(go => new { go = go, position = go.transform.position })
+                    .Aggregate((current, next) =>
+                               (current.position - currentPos).sqrMagnitude <
+                               (next.position - currentPos).sqrMagnitude
+                               ? current : next).go;
+
+            if (Vector3.Distance(getCube().transform.position, closestGameObject.transform.position) < 10)
+            {
+                EntityID e = (EntityID)closestGameObject.GetComponent(typeof(EntityID));
+                int tempid = e.getID();
+
+                foreach (EntityWarrior ew in Main.getMain().entities)
+                {
+                    if (ew.getEntityID().getID() == tempid)
+                    {
+                        target = ew;
+                    }
+                }
+            }
+        }*/
+    }
+
+    public void updateMaterial(bool jump)
+    {
+        if (getClassifierID() == 0)
+        {
+            if (!jump)
+            {
+                getCube().transform.renderer.material = Materials.redMat;
+            }
+            else
+            {
+                getCube().transform.renderer.material = Materials.redMatoutline;
+            }
+        }
+        else if (getClassifierID() == 1)
+        {
+            if (!jump)
+            {
+                getCube().transform.renderer.material = Materials.blueMat;
+            }
+            else
+            {
+                getCube().transform.renderer.material = Materials.blueMatoutline;
+            }
         }
     }
 
@@ -316,5 +452,10 @@ public class Entity
     public void jump(int force)
     {
         cube.rigidbody.AddForce(0, force, 0);
+    }
+
+    public int getMaxShootCooldown()
+    {
+        return shootcooldown_max;
     }
 }
