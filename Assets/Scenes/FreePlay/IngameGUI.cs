@@ -77,6 +77,14 @@ public class IngameGUI : MonoBehaviour
                     }
                 }
             }
+            else
+            {
+                if (Input.GetMouseButtonDown(0))
+                {
+                    Destroy(current_entity);
+                    current_entity = null;
+                }
+            }
         }
     }
 
@@ -88,8 +96,9 @@ public class IngameGUI : MonoBehaviour
         GUI.Label(new Rect(Screen.width - 150, 20, 150, 20), fps_string);
 
         // GameObject and Entity count Labels
-        GUI.Label(new Rect(Screen.width - 150, 40, 150, 20), UnityEngine.Object.FindObjectsOfType<GameObject>().Length.ToString() + " GameObjects");
-        GUI.Label(new Rect(Screen.width - 150, 60, 150, 20), Main.getMain().entities.Count.ToString() + " Entities");
+        // Laggy because of "FindObjectsOfType":
+        //GUI.Label(new Rect(Screen.width - 150, 40, 150, 20), UnityEngine.Object.FindObjectsOfType<GameObject>().Length.ToString() + " GameObjects");
+        GUI.Label(new Rect(Screen.width - 150, 40, 150, 20), Main.getMain().entities.Count.ToString() + " Entities");
 
         if (size < 1)
         {
@@ -217,16 +226,17 @@ public class IngameGUI : MonoBehaviour
                 int.TryParse(args[2], out count);
             }
             int.TryParse(args[1], out id);
-            int x = random.Next(20, 30);
-            int z = random.Next(20, 30);
-            if (id == 1)
-            {
-                x = random.Next(10, 20);
-                z = random.Next(10, 20);
-            }
             for (int i = 0; i < count; i++)
             {
-                EntityUtil.spawnEntityAtSpawn(id, x, z);
+                if (id == 0)
+                {
+                    EntityUtil.spawnEntityAtSpawn(id, random.Next(20, 30), random.Next(20, 30));
+                }
+                else
+                {
+                    EntityUtil.spawnEntityAtSpawn(id, random.Next(10, 20), random.Next(10, 20));
+                }
+                
             }
             response += "Successfully spawned " + args[2] + " entities of classifier " + Classifier.classifier[id] + ".";
         }
@@ -237,6 +247,7 @@ public class IngameGUI : MonoBehaviour
             {
                 e.die(false);
             }
+            Main.getMain().entities.Clear();
             response += "Successfully killed all entities.";
         }
         else

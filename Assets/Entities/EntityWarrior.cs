@@ -2,6 +2,8 @@
 using System.Collections;
 using System.Linq;
 using Assets.GamePlay;
+using Assets.GamePlay.Util;
+using System.Collections.Generic;
 
 // A warrior moves around very aggressively and fast and is a short ranged entity
 
@@ -13,7 +15,8 @@ public class EntityWarrior : Entity
     bool shootcooldown = false;
     int shootcooldown_c = 0;
 
-    public EntityWarrior(int c, Vector3 spawn) : base(c, 0.9F)
+    public EntityWarrior(int c, Vector3 spawn)
+        : base(c, 0.9F)
     {
         createGraphics(spawn);
         if (getClassifierID() == 0)
@@ -54,9 +57,77 @@ public class EntityWarrior : Entity
 
     }
 
+    public List<GameObject> targets = new List<GameObject>();
+    private void SortTargetsByDistance()
+    {
+        targets.Sort(delegate(GameObject t1, GameObject t2)
+        {
+            if (t1 != null && t2 != null)
+            {
+                return Vector3.Distance(t1.transform.position, getCube().transform.position).CompareTo(Vector3.Distance(t2.transform.position, getCube().transform.position));
+            }
+            return 100;
+        });
+    }
+    public void tryFindAttackTarget()
+    {
+        if (targets.Count > 2)
+        {
+            for (int i = 0; i < 3; i++)
+            {
+                if (targets[i] != null)
+                {
+                    if (Vector3.Distance(getCube().transform.position, targets[i].transform.position) < 10)
+                    {
+                        EntityID e = (EntityID)targets[i].GetComponent(typeof(EntityID));
+                        int tempid = e.getID();
+
+                        foreach (EntityWarrior ew in Main.getMain().entities)
+                        {
+                            if (ew.getEntityID().getID() == tempid)
+                            {
+                                target = ew;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        else
+        {
+            if (Main.getMain().entities.Count() > 6)
+            {
+                calculated = false;
+            }
+        }
+        List<GameObject> temp = new List<GameObject>(targets);
+        foreach(GameObject go in temp){
+            if(go == null){
+                targets.Remove(go);
+            }
+        }
+    }
+    bool calculated = false;
     public void findTarget()
     {
-        var currentPos = getCube().transform.position;
+        if (!calculated)
+        {
+            targets.Clear();
+            calculated = true;
+            GameObject[] go = GameObject.FindGameObjectsWithTag("EntityWarrior" + enemyClassifier);
+            foreach (GameObject g in go)
+            {
+                targets.Add(g);
+            }
+            SortTargetsByDistance();
+            tryFindAttackTarget();
+        }
+        else
+        {
+            tryFindAttackTarget();
+        }
+        
+        /*var currentPos = getCube().transform.position;
 
         GameObject[] gos = GameObject.FindGameObjectsWithTag("EntityWarrior" + enemyClassifier);
         if (gos.Length > 0)
@@ -81,7 +152,7 @@ public class EntityWarrior : Entity
                     }
                 }
             }
-        }
+        }*/
     }
 
     public override void move()

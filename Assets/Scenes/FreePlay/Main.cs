@@ -53,7 +53,8 @@ public class Main : MonoBehaviour
         blocks.Add(spawner2);
     }
 
-
+    Vector3 conedown_vector = new Vector3(0F, 0F, -0.03F);
+    Vector3 coneup_vector = new Vector3(0F, 0F, 0.03F);
     void Update()
     {
         camhandler.update();
@@ -61,7 +62,7 @@ public class Main : MonoBehaviour
         // animate cursorcone
         if (!conedown)
         {
-            cursorcone.transform.Translate(new Vector3(0F, 0F, -0.03F));
+            cursorcone.transform.Translate(conedown_vector);
             if (cursorcone.transform.position.y > 1.1)
             {
                 conedown = true;
@@ -69,7 +70,7 @@ public class Main : MonoBehaviour
         }
         else if (conedown)
         {
-            cursorcone.transform.Translate(new Vector3(0F, 0F, 0.03F));
+            cursorcone.transform.Translate(coneup_vector);
             if (cursorcone.transform.position.y < 0.7)
             {
                 conedown = false;

@@ -48,9 +48,11 @@ public class Entity
         smoke = GameObject.Find("Smoke");
     }
 
+    Vector3 txt_default_size = new Vector3(0.2F, 0.2F, 0.2F);
     public void createTextGraphics()
     {
         txt = new GameObject();
+        txt.name = "EntityThought";
         txtMesh = (TextMesh)txt.AddComponent(typeof(TextMesh));
         txtMesh.font = (Font)Resources.Load("pf_arma_five", typeof(Font));
         txt.transform.renderer.material = (Material)Resources.Load("pf_arma_five", typeof(Material));
@@ -59,7 +61,7 @@ public class Entity
         txtMesh.color = Color.black;
         txtMesh.richText = true;
         txtMesh.fontSize = 45;
-        txt.transform.localScale = new Vector3(0.2F, 0.2F, 0.2F);
+        txt.transform.localScale = txt_default_size;
         MeshRenderer meshrenderer = (MeshRenderer)txt.GetComponent(typeof(MeshRenderer));
         meshrenderer.enabled = false;
     }
@@ -79,8 +81,6 @@ public class Entity
     public void createHealthbarGraphics()
     {
         // health bar
-        health_green = new GameObject();
-        health_red = new GameObject();
         health_green = GameObject.CreatePrimitive(PrimitiveType.Plane);
         health_red = GameObject.CreatePrimitive(PrimitiveType.Plane);
         health_green.transform.renderer.material = Materials.greenMat;
@@ -91,6 +91,10 @@ public class Entity
         health_red.transform.Rotate(new Vector3(-90F, 0F, 0F));
         health_green.transform.Rotate(67.5F, 0F, 0F);
         health_red.transform.Rotate(67.5F, 0F, 0F);
+        MeshCollider m = (MeshCollider)health_green.GetComponent(typeof(MeshCollider));
+        Component.Destroy(m);
+        MeshCollider m_ = (MeshCollider)health_red.GetComponent(typeof(MeshCollider));
+        Component.Destroy(m_);
     }
 
 
@@ -167,7 +171,7 @@ public class Entity
                     cube_.transform.localPosition = (new VectorHelper(cubepos).add(pos[i, 0] * 0.0625F * 2, j * 0.0625F * 2, pos[i, 1] * 0.0625F * 2));
 
                     cube_.AddComponent<Rigidbody>();
-                    cube_.rigidbody.AddExplosionForce((Random.Range(150.0f, 350.0f)), explosionForcePos, (Random.Range(50.0f, 100.0f)));
+                    cube_.rigidbody.AddExplosionForce((Random.Range(100.0f, 250.0f)), explosionForcePos, (Random.Range(50.0f, 75.0f)));
                     cube_.rigidbody.SetDensity(cube_.transform.localPosition.x);
 
                     GameObject.Destroy(cube_, 2);
