@@ -30,6 +30,7 @@ public class EntityTank : Entity
         }
 
         base.bullet_fly_power = 1.5F;
+        base.reach = 30;
     }
 
     public void createGraphics(Vector3 spawn)
@@ -119,7 +120,7 @@ public class EntityTank : Entity
             if (target is Entity)
             {
                 shootcooldown = true;
-                attack((Entity)target);
+                attack(target);
             }
         }
     }
@@ -127,12 +128,6 @@ public class EntityTank : Entity
     public Entity getTarget()
     {
         return target;
-    }
-
-    public override void update()
-    {
-        base.update();
-        move();
     }
 
 }

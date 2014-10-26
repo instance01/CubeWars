@@ -16,6 +16,7 @@ public class Entity
     private bool canspeak = true;
     private int shootcooldown_max = 100;
     public float bullet_fly_power = 1F;
+    public int reach = 10;
 
     public GameObject cube;
 
@@ -123,9 +124,9 @@ public class Entity
     {
         if (cube != null)
         {
-            cube.transform.rotation = Quaternion.LookRotation(Vector3.RotateTowards(cube.transform.position, v - cube.transform.position, Time.deltaTime * speed_, 0.0F));
+            cube.transform.rotation = Quaternion.Slerp(cube.transform.rotation, Quaternion.LookRotation(v - cube.transform.position, Vector3.up), Time.deltaTime * speed * 4F);
             cube.transform.position = Vector3.MoveTowards(cube.transform.position, v, Time.deltaTime * speed_);
-            if (Mathf.Abs(cube.transform.position.x - v.x) < 0.1 && Mathf.Abs(cube.transform.position.z - v.z) < 0.1)
+            if (Mathf.Abs(cube.transform.position.x - v.x) < 0.4 && Mathf.Abs(cube.transform.position.z - v.z) < 0.4)
             {
                 move_ = true;
                 Main.getMain().cursorcone.renderer.enabled = false;
@@ -222,6 +223,7 @@ public class Entity
                 }
             }
         }
+        move();
     }
 
     public void checkCollide(Collision c)
@@ -267,13 +269,16 @@ public class Entity
 
         Rigidbody rigid = (Rigidbody)attackcube.AddComponent(typeof(Rigidbody));
         rigid.velocity = new VectorHelper((e.getCube().transform.position - attackcube.transform.position).normalized * bullet_fly_power * 15).add(0F, 2.5F, 0F);
-        //rigid.velocity.Set (rigid.velocity.x, 25, rigid.velocity.z);
 
         GameObject.Destroy(attackcube, 4);
 
-        getCube().transform.LookAt(target.getCube().transform);
+        if (move_)
+        {
+            getCube().transform.LookAt(target.getCube().transform);
+            //cube.transform.rotation = Quaternion.Slerp(cube.transform.rotation, Quaternion.LookRotation(target.getCube().transform.position - cube.transform.position, Vector3.up), Time.deltaTime * speed * 4F); 
+        }
 
-        if (Vector3.Distance(getCube().transform.position, e.getCube().transform.position) > 15)
+        if (Vector3.Distance(getCube().transform.position, e.getCube().transform.position) > (reach + 5))
         {
             this.target = null;
         }
@@ -299,7 +304,7 @@ public class Entity
             {
                 if (targets[i] != null)
                 {
-                    if (Vector3.Distance(getCube().transform.position, targets[i].transform.position) < 10)
+                    if (Vector3.Distance(getCube().transform.position, targets[i].transform.position) < reach)
                     {
                         EntityID e = (EntityID)targets[i].GetComponent(typeof(EntityID));
                         int tempid = e.getID();

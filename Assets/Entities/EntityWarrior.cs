@@ -111,11 +111,4 @@ public class EntityWarrior : Entity
         return target;
     }
 
-    public override void update()
-    {
-        base.update();
-        move();
-    }
-
-
 }

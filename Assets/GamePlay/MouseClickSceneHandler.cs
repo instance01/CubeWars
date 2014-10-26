@@ -25,43 +25,13 @@ namespace Assets.GamePlay
             ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray, out hit))
             {
-                if (hit.collider.name == "EntityWarriorRED")
+                if (hit.collider.name.EndsWith("RED"))
                 {
                     hit.collider.renderer.material = Materials.redMatoutline;
-                    if (Input.GetMouseButtonDown(0))
-                    {
-                        EntityID e = (EntityID)hit.collider.GetComponent(typeof(EntityID));
-                        int tempid = e.getID();
-
-                        foreach (Entity e_ in entities)
-                        {
-                            if (e_.getEntityID().getID() == tempid)
-                            {
-                                // found
-                                e_.jump();
-                                selected = e_;
-                            }
-                        }
-                    }
                 }
-                else if (hit.collider.name == "EntityWarriorBLUE")
+                else if (hit.collider.name.EndsWith("BLUE"))
                 {
                     hit.collider.renderer.material = Materials.blueMatoutline;
-                    if (Input.GetMouseButtonDown(0))
-                    {
-                        EntityID e = (EntityID)hit.collider.GetComponent(typeof(EntityID));
-                        int tempid = e.getID();
-
-                        foreach (Entity e_ in entities)
-                        {
-                            if (e_.getEntityID().getID() == tempid)
-                            {
-                                // found
-                                e_.jump();
-                                selected = e_;
-                            }
-                        }
-                    }
                 }
                 else
                 {
@@ -74,8 +44,8 @@ namespace Assets.GamePlay
                     {
                         if (Input.GetMouseButtonDown(0))
                         {
-                            EntityWarrior ew_ = (EntityWarrior)selected;
-                            ew_.setMove(false, hit.point);
+                            Entity e_ = (Entity)selected;
+                            e_.setMove(false, hit.point);
                             // ew_.moveTo(hit.point, 1.5F);
                             // spawn cool pointer
                             Main.getMain().cursorcone.renderer.enabled = true;
@@ -85,7 +55,23 @@ namespace Assets.GamePlay
                         {
                             selected = null;
                         }
+                    }
+                    return;
+                }
 
+                if (Input.GetMouseButtonDown(0))
+                {
+                    EntityID e = (EntityID)hit.collider.GetComponent(typeof(EntityID));
+                    int tempid = e.getID();
+
+                    foreach (Entity e_ in entities)
+                    {
+                        if (e_.getEntityID().getID() == tempid)
+                        {
+                            // found
+                            e_.jump();
+                            selected = e_;
+                        }
                     }
                 }
                 //print (hit.collider.name);
