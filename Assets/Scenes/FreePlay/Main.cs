@@ -15,8 +15,8 @@ public class Main : MonoBehaviour
 
     public Vector3 spawnLocation = new Vector3(0F, 2.5F, 0F);
     public List<Entity> entities = new List<Entity>();
-    public int redwarriors = 0;
-    public int bluewarriors = 0;
+    public int red = 0;
+    public int blue = 0;
 
     public List<Block> blocks = new List<Block>();
 
@@ -25,8 +25,14 @@ public class Main : MonoBehaviour
 
     static Main main;
 
+    public bool heroMode = false;
+    public static Entity currentHero;
+
+    public static int instancesTest = 0;
+
     void Start()
     {
+        instancesTest++;
         main = this;
         Materials.init();
         random = new System.Random();
@@ -39,19 +45,16 @@ public class Main : MonoBehaviour
 
         for (int i = 0; i < 10; i++)
         {
-            EntityUtil.spawnEntityAtSpawn(0, random.Next(20, 30), random.Next(20, 30));
+            EntityUtil.spawnEntityAtSpawn(0, 0, random.Next(20, 30), random.Next(20, 30));
         }
 
         for (int i = 0; i < 10; i++)
         {
-            EntityUtil.spawnEntityAtSpawn(1, random.Next(10, 20), random.Next(10, 20));
+            EntityUtil.spawnEntityAtSpawn(0, 1, random.Next(10, 20), random.Next(10, 20));
         }
 
-        EntityTank t = new EntityTank(0, new VectorHelper(Main.getMain().spawnLocation).add(20, 0, 20));
-        Main.getMain().entities.Add(t);
-
-        EntityTank t_ = new EntityTank(1, new VectorHelper(Main.getMain().spawnLocation).add(18, 0, 18));
-        Main.getMain().entities.Add(t_);
+        EntityUtil.spawnEntityAtSpawn(1, 0, 20, 20);
+        EntityUtil.spawnEntityAtSpawn(1, 1, 18, 18);
 
         BlockSpawner spawner = new BlockSpawner(10, 0, 14, 1);
         BlockSpawner spawner2 = new BlockSpawner(28, 0, 24, 0);
@@ -130,8 +133,8 @@ public class Main : MonoBehaviour
     {
         GUIStyle style = GUI.skin.GetStyle("Label");
         style.alignment = TextAnchor.UpperCenter;
-        string re = redwarriors.ToString();
-        string be = bluewarriors.ToString();
+        string re = red.ToString();
+        string be = blue.ToString();
         style.normal.textColor = Color.red;
         GUI.Label(new Rect(Screen.width / 2 - 40, 5, 10, 20), "R");
         style.normal.textColor = Color.white;
@@ -142,19 +145,19 @@ public class Main : MonoBehaviour
 
     public void updateWarriorCounts(int r, int b)
     {
-        redwarriors = r;
-        bluewarriors = b;
+        red = r;
+        blue = b;
     }
 
     public void addWarriorCount(bool r, bool b)
     {
         if (r)
         {
-            redwarriors += 1;
+            red += 1;
         }
         else if (b)
         {
-            bluewarriors += 1;
+            blue += 1;
         }
     }
 

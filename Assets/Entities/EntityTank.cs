@@ -17,7 +17,7 @@ public class EntityTank : Entity
     int shootcooldown_c = 0;
 
     public EntityTank(int c, Vector3 spawn)
-        : base(c, 0.6F, 40, 80)
+        : base(1, c, 0.6F, 40, 80)
     {
         createGraphics(spawn);
         if (getClassifierID() == 0)

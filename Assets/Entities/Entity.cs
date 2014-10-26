@@ -40,7 +40,7 @@ public class Entity
     /// Initializes a new entity
     /// </summary>
     /// <param name="classifierID">The classifier id (e.g. RED=0, BLUE=1)</param>
-    public Entity(int classifierID, float speed = 1F, int maxhealth = 3, int shootcooldown_max = 100, bool canspeak = true)
+    public Entity(int entityType, int classifierID, float speed = 1F, int maxhealth = 3, int shootcooldown_max = 100, bool canspeak = true)
     {
         this.classifierID = classifierID;
         this.speed = speed;
@@ -187,11 +187,11 @@ public class Entity
 
         if (getClassifierID() == 0)
         {
-            Main.getMain().updateWarriorCounts(Main.getMain().redwarriors - 1, Main.getMain().bluewarriors);
+            Main.getMain().updateWarriorCounts(Main.getMain().red - 1, Main.getMain().blue);
         }
         else
         {
-            Main.getMain().updateWarriorCounts(Main.getMain().redwarriors, Main.getMain().bluewarriors - 1);
+            Main.getMain().updateWarriorCounts(Main.getMain().red, Main.getMain().blue - 1);
         }
     }
 

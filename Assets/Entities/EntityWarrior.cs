@@ -17,7 +17,7 @@ public class EntityWarrior : Entity
     int shootcooldown_c = 0;
 
     public EntityWarrior(int c, Vector3 spawn)
-        : base(c, 1.1F)
+        : base(0, c, 1.1F)
     {
         createGraphics(spawn);
         if (getClassifierID() == 0)
@@ -53,6 +53,8 @@ public class EntityWarrior : Entity
         cubeCollider.size = new Vector3(1.25F, 1.25F, 1.25F);
         base.setEntityID(cube.AddComponent<EntityID>());
         cube.AddComponent<EntityCollider>().init(this);
+
+        cube.rigidbody.mass = 1.5F;
 
         base.createHealthbarGraphics();
 

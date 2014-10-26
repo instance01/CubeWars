@@ -77,14 +77,7 @@ namespace Assets.Blocks
             midblock.transform.Rotate(0F, 1F, 0F);
             if (Random.Range(0, 100) > 98)
             {
-                if (id == 0)
-                {
-                    EntityUtil.spawnEntity(0, x + Random.Range(1, 5), y + 0.5F, z + Random.Range(1, 5));
-                }
-                else if (id == 1)
-                {
-                    EntityUtil.spawnEntity(1, x + Random.Range(1, 5), y + 0.5F, z + Random.Range(1, 5));
-                }
+                EntityUtil.spawnEntity(0, id, x + Random.Range(1, 5), y + 0.5F, z + Random.Range(1, 5));
             }
         }
     }

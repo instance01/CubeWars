@@ -16,6 +16,11 @@ namespace Assets.GamePlay
 
         public void update()
         {
+            if (Main.getMain().heroMode)
+            {
+                return;
+            }
+
             // move the camera
             float moveScroll = -Input.GetAxis("Mouse ScrollWheel") * 500 * Time.deltaTime;
             float ytemp = cam.transform.localPosition.y;

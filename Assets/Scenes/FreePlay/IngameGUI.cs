@@ -32,6 +32,8 @@ public class IngameGUI : MonoBehaviour
     Ray ray;
     RaycastHit hit;
 
+    int count = 0;
+
     void Start()
     {
         timeleft = updateInterval;
@@ -65,7 +67,7 @@ public class IngameGUI : MonoBehaviour
                 {
                     if (Input.GetMouseButtonDown(0))
                     {
-                        EntityUtil.spawnEntity(current_entity_id, hit.point.x, hit.point.y - 0.5F, hit.point.z);
+                        EntityUtil.spawnEntity(1, current_entity_id, hit.point.x, hit.point.y - 0.5F, hit.point.z);
                     }
                 }
                 else
@@ -84,6 +86,16 @@ public class IngameGUI : MonoBehaviour
                     Destroy(current_entity);
                     current_entity = null;
                 }
+            }
+        }
+        count++;
+        if (count > 1000)
+        {
+            if (response.Length > 0)
+            {
+                response = response.Substring(response.IndexOf("\n") + 1);
+                currentheight -= (int)size;
+                count = 0;
             }
         }
     }
@@ -215,26 +227,28 @@ public class IngameGUI : MonoBehaviour
         {
             string[] args = cmd.Split(' ');
             int count = 1;
+            int type = 0;
             int id = 0;
-            if (args.Length < 2)
+            if (args.Length < 3)
             {
-                response += "Usage. /spawnentity [id] [count]. Possible ids: 0, 1";
+                response += "Usage. /spawnentity [type] [id] [count]. Possible ids: 0, 1";
                 return;
             }
-            else if (args.Length > 2)
+            else if (args.Length > 3)
             {
-                int.TryParse(args[2], out count);
+                int.TryParse(args[3], out count);
             }
-            int.TryParse(args[1], out id);
+            int.TryParse(args[1], out type);
+            int.TryParse(args[2], out id);
             for (int i = 0; i < count; i++)
             {
                 if (id == 0)
                 {
-                    EntityUtil.spawnEntityAtSpawn(id, random.Next(20, 30), random.Next(20, 30));
+                    EntityUtil.spawnEntityAtSpawn(type, id, random.Next(20, 30), random.Next(20, 30));
                 }
                 else
                 {
-                    EntityUtil.spawnEntityAtSpawn(id, random.Next(10, 20), random.Next(10, 20));
+                    EntityUtil.spawnEntityAtSpawn(type, id, random.Next(10, 20), random.Next(10, 20));
                 }
             }
             response += "Successfully spawned " + args[2] + " entities of classifier " + Classifier.classifier[id] + ".";
