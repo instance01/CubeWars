@@ -11,7 +11,7 @@ public class Main : MonoBehaviour
     public static List<string> words = new List<string>(new string[] { "Hi", "What's up fella!", "Dudee", "Dudeeee", "I'm bored.", "?", "!", "Mhm", "Hmmm", "I hate you", "I love you", "Nope Nope Nope", "Gawd", "Ugh", "yaaaaay", "mkay", "sup", "rude", "Not cool man", "so", "Fu" });
 
     CameraHandler camhandler;
-    MouseClickSceneHandler mouseclickhandler;
+    public MouseClickSceneHandler mouseclickhandler;
 
     public Vector3 spawnLocation = new Vector3(0F, 2.5F, 0F);
     public List<Entity> entities = new List<Entity>();

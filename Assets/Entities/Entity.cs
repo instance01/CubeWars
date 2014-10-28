@@ -129,6 +129,10 @@ public class Entity
             if (Mathf.Abs(cube.transform.position.x - v.x) < 0.4 && Mathf.Abs(cube.transform.position.z - v.z) < 0.4)
             {
                 move_ = true;
+                if (Main.getMain().mouseclickhandler.selected.Contains(this))
+                {
+                    Main.getMain().mouseclickhandler.selected.Remove(this);
+                }
                 Main.getMain().cursorcone.renderer.enabled = false;
             }
         }
@@ -254,11 +258,11 @@ public class Entity
         attackcube.transform.localScale = new Vector3(0.1F, 0.1F, 0.1F);
         if (getClassifierID() == 0)
         {
-            cube.renderer.material = Materials.redMat;
+            attackcube.renderer.material = Materials.redMatoutline;
         }
         else if (getClassifierID() == 1)
         {
-            cube.renderer.material = Materials.blueMat;
+            attackcube.renderer.material = Materials.blueMatoutline;
         }
         attackcube.transform.localRotation = cube.transform.localRotation;
         attackcube.transform.localPosition = new VectorHelper(cube.transform.localPosition).add(0, 1, 0);

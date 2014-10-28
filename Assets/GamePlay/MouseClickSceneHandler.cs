@@ -6,15 +6,15 @@ using System.Text;
 
 namespace Assets.GamePlay
 {
-    class MouseClickSceneHandler
+    public class MouseClickSceneHandler
     {
         Ray ray;
         RaycastHit hit;
+        RaycastHit lastrayhit;
 
-        Entity selected;
+        public List<Entity> selected = new List<Entity>();
 
         float clickTime = 0F;
-        float clickTime_ = 0.25F;
 
         GameObject maincam;
         GameObject origcam;
@@ -55,7 +55,7 @@ namespace Assets.GamePlay
             {
                 ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             }
-            else if(cam != null)
+            else if (cam != null)
             {
                 ray = cam.ScreenPointToRay(Input.mousePosition);
             }
@@ -63,8 +63,41 @@ namespace Assets.GamePlay
             {
                 return;
             }
+
             if (Physics.Raycast(ray, out hit))
             {
+                if (Input.GetMouseButton(0))
+                {
+                    if (!isHandled)
+                    {
+                        lastrayhit = hit;
+                        isHandled = true;
+                    }
+                }
+                else
+                {
+                    if (isHandled)
+                    {
+
+                        Vector3 point1 = lastrayhit.point;
+                        Vector3 point2 = hit.point;
+                        //Debug.Log(point1.ToString() + " " + point2.ToString());
+                        foreach (Entity e in Main.getMain().entities)
+                        {
+                            Vector3 pos = e.cube.transform.localPosition;
+                            //Debug.Log("## " + pos.ToString() + " || " + point1.ToString() + " || " + point2.ToString());
+                            //Debug.Log("##### " + (pos.x > Math.Min(point1.x, point2.x)).ToString() + (pos.x < Math.Max(point1.x, point2.x)).ToString() + (pos.z > Math.Min(point1.z, point2.z)).ToString() + (pos.z < Math.Max(point1.z, point2.z)).ToString());
+                            if (pos.x > Math.Min(point1.x, point2.x) && pos.x < Math.Max(point1.x, point2.x) && pos.z > Math.Min(point1.z, point2.z) && pos.z < Math.Max(point1.z, point2.z))
+                            {
+                                selected.Add(e);
+                                e.updateMaterial(true);
+                            }
+                        }
+                        isHandled = false;
+                    }
+                    return;
+                }
+
                 if (hit.collider.name.EndsWith("RED"))
                 {
                     hit.collider.renderer.material = Materials.redMatoutline;
@@ -80,19 +113,21 @@ namespace Assets.GamePlay
                         e.updateMaterial(false);
                     }
 
-                    if (selected != null)
+                    if (selected.Count > 0)
                     {
                         if (Input.GetMouseButtonDown(0))
                         {
-                            Entity e_ = (Entity)selected;
-                            e_.setMove(false, hit.point);
-                            // spawn cool pointer
-                            Main.getMain().cursorcone.renderer.enabled = true;
-                            Main.getMain().cursorcone.transform.position = new VectorHelper(hit.point).add(0F, 1F, 0F);
+                            foreach (Entity e_ in selected)
+                            {
+                                e_.setMove(false, hit.point);
+                                // spawn cool pointer
+                                Main.getMain().cursorcone.renderer.enabled = true;
+                                Main.getMain().cursorcone.transform.position = new VectorHelper(hit.point).add(0F, 1F, 0F);
+                            }
                         }
                         else if (Input.GetMouseButton(1))
                         {
-                            selected = null;
+                            selected = new List<Entity>();
                         }
                     }
                     return;
@@ -112,7 +147,7 @@ namespace Assets.GamePlay
                             e = e_;
                         }
                     }
-                    if (Time.time - clickTime < clickTime_)
+                    if (Time.time - clickTime < 0.25F)
                     {
                         Main.currentHero = e;
                         if (cam != null)
@@ -134,12 +169,19 @@ namespace Assets.GamePlay
                         if (e != null)
                         {
                             e.jump();
-                            selected = e;
+                            selected.Add(e);
                         }
                     }
                     clickTime = Time.time;
                 }
             }
         }
+
+        bool isHandled = false;
+        public void updateMouseDrag()
+        {
+
+        }
+
     }
 }
